@@ -1,0 +1,24 @@
+deflogin on
+term 'screen'
+defscrollback 10000
+bind K stuff "set -o vi; export PATH=/usr/local/bin:/usr/local/sbin:/usr/sbin:/sbin:\$PATH"
+bind V stuff ":set sts=4 sw=4 et ai"
+multiuser on
+aclchg :window: +x select
+startup_message off
+nonblock on
+bind s select zsh
+bind ^S
+bind "'" windowlist -b
+bind ^H prev
+hardstatus string "[%n] %h - %t"
+termcapinfo xterm 'hs:ts=\E]2;:fs=\007:ds=\E]2;screen (no title yet)\007'
+windowlist title "Num Name%=Location Flags"
+windowlist string "%03n %t%=%h %f"
+shell -${SHELL}
+
+# Remove 'xoff' and 'xon' bindings
+bind q
+bind ^q
+bind s
+bind ^s
