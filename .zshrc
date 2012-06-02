@@ -31,8 +31,7 @@ alias vi=vim
 alias -g L='|less'
 alias -g H='|head'
 alias -g T='|tail'
-alias ack='ack-grep'
-alias t='mkdir -m 0700 -p /tmp/$USER.$$; cd /tmp/$USER.$$'
+alias t='mkdir -m 0700 -p /tmp/$USER.$$ && cd /tmp/$USER.$$'
 alias pi='ssh -t people.mozilla.com screen -x irc'
 unalias rm mv cp 2>/dev/null  # no -i madness
 
