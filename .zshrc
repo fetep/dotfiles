@@ -1,45 +1,10 @@
-
+# general
 umask 022
+HOST="$(hostname)"
+HOST="${HOST%%.*}"
 
-setopt rm_star_silent
-setopt interactivecomments
-setopt no_prompt_cr
-setopt notify
+# vi mode, inspired by ksh
 setopt vi
-setopt shwordsplit
-setopt autopushd
-setopt pushd_ignore_dups
-setopt nohup
-setopt extendedglob
-setopt nocorrect
-
-# history
-setopt append_history
-setopt extended_history
-setopt hist_ignore_all_dups
-setopt hist_reduce_blanks
-HISTFILE=~/.history_zsh
-HISTSIZE=1048576
-SAVEHIST=$HISTSIZE
-
-# aliases
-alias ls='ls -F'
-alias d='dirs -v'
-alias pushd='pushd; dirs -v'
-alias popd='popd; dirs -v'
-alias vi=vim
-alias -g L='|less'
-alias -g H='|head'
-alias -g T='|tail'
-alias t='mkdir -m 0700 -p /tmp/$USER.$$ && cd /tmp/$USER.$$'
-alias pi='ssh -t people.mozilla.com screen -x irc'
-unalias rm mv cp 2>/dev/null  # no -i madness
-
-if [ ! -z "$REAL_USER" ]; then
-  alias vim="env HOME=/home/$REAL_USER vim"
-fi
-
-# ksh addictions
 setopt nonomatch
 bindkey "\e_" insert-last-word
 bindkey "\e*" expand-word
@@ -53,6 +18,46 @@ autoload edit-command-line
 zle -N edit-command-line
 bindkey -M vicmd v edit-command-line
 
+# options
+setopt rm_star_silent
+setopt interactivecomments
+setopt no_prompt_cr
+setopt notify
+setopt shwordsplit
+setopt autopushd
+setopt pushd_ignore_dups
+setopt nohup
+setopt extendedglob
+setopt nocorrect
+
+# history
+setopt inc_append_history
+setopt extended_history
+setopt hist_ignore_all_dups
+setopt hist_reduce_blanks
+unsetopt share_history
+if [ "$USER" = "petef" ]; then
+    HISTFILE=$HOME/.history_zsh
+else
+    HISTFILE=$HOME/.history_zsh_$USER
+fi
+HISTSIZE=1048576
+SAVEHIST=$HISTSIZE
+
+# aliases
+alias ls='ls -F'
+alias d='dirs -v'
+alias pushd='pushd; dirs -v'
+alias popd='popd; dirs -v'
+for n in {1..9}; do alias ${n}="cd +${n}"; done
+[ -x =vim ] && alias vi=vim
+alias -g L='|less'
+alias -g H='|head'
+alias -g T='|tail'
+[ -x =ack-grep ] && alias ack='ack-grep'
+alias t='mkdir -m 0700 -p /tmp/$USER.$$; cd /tmp/$USER.$$'
+unalias rm mv cp 2>/dev/null  # no -i madness
+
 # completion madness
 compctl -g '*(-/D)' cd
 compctl -g '*.ps' ghostview gv evince
@@ -60,40 +65,10 @@ compctl -g '*.pdf' acroread xpdf evince
 compctl -j -P '%' kill bg fg
 compctl -v export unset vared
 
-# some variables for later
-HOST="$(hostname)"
-HOST="${HOST%%.*}"
+autoload -U compinit
+compinit
 
-# common path to an ssh agent
-export LOCAL_SSH_AUTH_SOCK=/tmp/$USER.ssh-agent.sock
-
-# if we don't have keys locally, point the "local" ssh-agent
-# sock path at our forwarded agent
-if [ ! -e "$HOME/.ssh/id_dsa"  -a \
-     -n "$SSH_AUTH_SOCK" -a \
-     "$SSH_AUTH_SOCK" != "$LOCAL_SSH_AUTH_SOCK" ]; then
-  export REAL_SSH_AUTH_SOCK=$SSH_AUTH_SOCK
-  ln -sf $REAL_SSH_AUTH_SOCK $LOCAL_SSH_AUTH_SOCK
-fi
-
-export SSH_AUTH_SOCK=$LOCAL_SSH_AUTH_SOCK
-
-if [ -e "$HOME/.ssh/id_dsa" ]; then
-  # Do we need to start an agent or add keys?
-  ssh-add -l >/dev/null 2>&1
-  rc=$?
-  if [ $rc -eq 2 ]; then
-    ssh-agent -a $SSH_AUTH_SOCK
-    flock -nx /tmp/$USER.ssh-add ssh-add
-  elif [ $rc -eq 1 ]; then
-    flock -nx /tmp/$USER.ssh-add ssh-add
-  fi
-fi
-
-if [ -s "$HOME/.rvm/scripts/rvm" ]; then
-  source $HOME/.rvm/scripts/rvm
-fi
-
+# custom functions
 function psg() {
   ps auxww | egrep -- $* | fgrep -v egrep
 }
@@ -118,32 +93,31 @@ function title() {
   # We replace literal '%' with '%%'
   # Also use ${(V) ...} to make nonvisible chars printable (think cat -v)
   # Replace newlines with '; '
-  local value="${${${(V)1//\%/\%\%}//'\n'/; }//'\t'/ }"
-  local location
+  local cmd="${${${(V)1//\%/\%\%}//'\n'/; }//'\t'/ }"
+  local curdir="(%55<...<%~)"
+  local location="${HOST}"
 
-  location="${HOST}(%55<...<%~)"
-  [ "$USERNAME" != "$LOGNAME" ] && location="${USERNAME}@${location}"
+  [ "$USERNAME" != "petef" ] && location="${USERNAME}@${location}"
 
   # Special format for use with print -Pn
-  value="%70>...>$value%<<"
+  cmd="%70>...>$cmd%<<"
   unset PROMPT_SUBST
   case $TERM in
     screen*)
       # Put this in your .screenrc:
       # hardstatus string "[%n] %h - %t"
       # termcapinfo xterm 'hs:ts=\E]2;:fs=\007:ds=\E]2;screen (not title yet)\007'
-      print -Pn "\ek${value}\e\\"     # screen title (in windowlist)
-      print -Pn "\e_${location}\e\\"  # screen location
+      print -Pn "\ek${cmd}\e\\"     # screen title (in windowlist)
+      print -Pn "\e_${curdir}${location}\e\\"  # screen location
       ;;
     xterm*)
-      print -Pn "\e]0;${value} - ${location}\a"
+      print -Pn "\e]0;${cmd} - ${location}${curdir}\a"
       ;;
   esac
-  setopt LOCAL_OPTIONS
 }
 
 function precmd() {
-  title "zsh"
+  title "-zsh"
 }
 
 function preexec() {
@@ -174,44 +148,13 @@ function preexec() {
   title "$cmd"
 }
 
+# randomizes order of stdin or given file
 function rand() {
   RANDOM=$RANDOM`date +%s`        # seed
   while IFS= read -r in
   do
     echo ${RANDOM}${RANDOM} "$in"
   done < ${1:-/dev/stdin} | sort | sed -e 's,^[0-9]* ,,'
-}
-
-function bytes() {
-  if [ $# -gt 0 ]; then
-    while [ $# -gt 0 ]; do
-      echo -n "${1}B = "
-      byteconv "$1"
-      shift
-    done
-  else
-    while read a; do
-      byteconv "$a"
-    done
-  fi
-}
-
-function byteconv() {
-  a=$1
-  ORDER=BKMGTP
-  while [ $(echo "$a >= 1024" | bc) -eq 1 -a $#ORDER -gt 1 ]; do
-    a=$(echo "scale=2; $a / 1024" | bc)
-    ORDER="${ORDER#?}"
-  done
-  echo "${a}${ORDER[0]}"
-}
-
-function up() {
-  target=""
-  for ((i=0; i < ${1:-1}; i++)) {
-    target="${target}../"
-  }
-  cd ${target}${2}
 }
 
 function stats() {
@@ -270,8 +213,34 @@ function stats() {
 }
 
 function pastebin() {
-  curl --data-urlencode "paste_code@${1:--}" http://pastebin.com/api_public.php
+  local api_key_path="$HOME/.pastebin_api_key"
+  local api_key curl_opts
+
+  if [ ! -f "$api_key_path" ]; then
+    echo "pastebin: missing api key in $api_key_path" >&2
+    return 1
+  fi
+
+  api_key=$(cat "$api_key_path")
+  curl_opts="--data-urlencode api_option=paste"
+  curl_opts="${curl_opts} --data-urlencode api_paste_private=1"
+  curl_opts="${curl_opts} --data-urlencode api_dev_key=$api_key"
+  curl_opts="${curl_opts} --data-urlencode api_paste_code@${1:--}"
+  curl_opts="${curl_opts} --data-urlencode api_paste_expire_date=1M"
+  if [ -n "$1" ]; then
+    curl_opts="${curl_opts} --data-urlencode api_paste_name=$1"
+  fi
+  if [ -n "$2" ]; then
+    curl_opts="${curl_opts} --data-urlencode api_paste_format=$2"
+  fi
+  curl ${curl_opts} http://pastebin.com/api/api_post.php
   echo ""  # API doesn't return a newline
 }
 
-. ~/.zshenv
+# prompt
+[ "$USERNAME" != "petef" -a "$USERNAME" != "root" ] && u="${USERNAME}@"
+export PS1="%? ${u}%m(%35<...<%~) %# "
+unset RPROMPT RPS1
+
+# rvm
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"

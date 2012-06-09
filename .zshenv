@@ -1,13 +1,8 @@
-# $Id: .zshenv 30 2010-07-19 21:22:09Z petef $
-#
 # sourced on every zsh invocation except if -f is given.
-#
-
-export KVDB=/home/petef/m/sysadmins/svc/kv/kvdb
 
 PATH=$PATH:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 NEWPATH=$HOME/bin
-for p in /usr/ucb /usr/ccs/bin /opt/SUNWspro/bin /opt/gnu/bin /var/lib/gems/1.8/bin /home/petef/ops/scripts /home/petef/android/android-sdk-linux/tools /home/petef/android/android-sdk-linux/platform-tools /home/petef/kv/bin
+for p in /usr/ucb /usr/ccs/bin /opt/SUNWspro/bin /opt/gnu/bin /var/lib/gems/1.8/bin /usr/lib/gems/1.8/bin $HOME/android/android-sdk-linux/tools $HOME/android/android-sdk-linux/platform-tools $HOME/.rvm/bin
 do
   [ -d "$p" ] && NEWPATH=$NEWPATH:$p
 done
@@ -40,9 +35,3 @@ export VISUAL="$EDITOR"
 if [ "$TERM" = "screen-bce" ]; then
   export TERM="screen"
 fi
-
-[ "$USERNAME" != "petef" -a "$USERNAME" != "root" ] && u="${USERNAME}@"
-export PS1="%? ${u}%m(%35<...<%~) %# "
-unset RPROMPT RPS1
-
-PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
