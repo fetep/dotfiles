@@ -73,6 +73,23 @@ function psg() {
   ps auxww | egrep -- $* | fgrep -v egrep
 }
 
+function scp() {
+  found=false
+  for arg; do
+    if [ "${arg%%:*}" != "${arg}" ]; then
+      found=true
+      break
+    fi
+  done
+
+  if ! $found; then
+    echo "scp: no remote location specified" >&2
+    return 1
+  fi
+
+  =scp "$@"
+}
+
 function svn-tkdiff() {
   svn st -q "$@" | while read mod file; do
     if [ ! -f "$file" ]; then
