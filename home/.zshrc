@@ -45,6 +45,7 @@ HISTSIZE=1048576
 SAVEHIST=$HISTSIZE
 
 # aliases
+alias c='ssh carrera.databits.net'
 alias ls='ls -F'
 alias d='dirs -v'
 alias pushd='pushd; dirs -v'
@@ -261,3 +262,9 @@ unset RPROMPT RPS1
 
 # rvm
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
+
+if [[ -d "$HOME/.zsh" ]]; then
+  for file in $HOME/.zsh/*.zsh; do
+    . $file
+  done
+fi
