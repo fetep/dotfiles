@@ -21,7 +21,7 @@ set autowrite
 set scrolloff=10  " guaranteed context lines
 
 " style
-set sts=4 sw=4 et
+set sts=2 sw=2 et
 set shiftround
 set list
 set listchars=tab:>-
