@@ -1,5 +1,4 @@
 deflogin on
-term 'screen'
 defscrollback 10000
 bind K stuff "set -o vi; export PATH=/usr/local/bin:/usr/local/sbin:/usr/sbin:/sbin:\$PATH"
 bind V stuff ":set sts=4 sw=4 et ai"
@@ -22,3 +21,8 @@ bind q
 bind ^q
 bind s
 bind ^s
+
+term 'screen-256color'
+attrcolor b ".I"
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+defbce "on"
