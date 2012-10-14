@@ -126,7 +126,7 @@ function title() {
       # hardstatus string "[%n] %h - %t"
       # termcapinfo xterm 'hs:ts=\E]2;:fs=\007:ds=\E]2;screen (not title yet)\007'
       print -Pn "\ek${cmd}\e\\"     # screen title (in windowlist)
-      print -Pn "\e_${curdir}${location}\e\\"  # screen location
+      print -Pn "\e_${curdir} ${location}\e\\"  # screen location
       ;;
     xterm*)
       print -Pn "\e]0;${cmd} - ${location}${curdir}\a"
