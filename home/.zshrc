@@ -1,7 +1,17 @@
+
 # general
 umask 022
-HOST="$(hostname)"
-HOST="${HOST%%.*}"
+HOST="${$(hostname)%%.*}"
+
+case $USER in
+petef|pfritchman) _me=true ;;
+*) me=false ;;
+esac
+
+case $HOST in
+*-desk|fetep-work|nyc-it-petenix) _ws=true ;;
+*) _ws=false ;;
+esac
 
 # vi mode, inspired by ksh
 setopt vi
@@ -31,12 +41,12 @@ setopt extendedglob
 setopt nocorrect
 
 # history
-setopt inc_append_history
 setopt extended_history
 setopt hist_ignore_all_dups
 setopt hist_reduce_blanks
-unsetopt share_history
-if [ "$USER" = "petef" ]; then
+setopt hist_ignore_space
+setopt share_history
+if $_me; then
     HISTFILE=$HOME/.history_zsh
 else
     HISTFILE=$HOME/.history_zsh_$USER
@@ -45,7 +55,6 @@ HISTSIZE=1048576
 SAVEHIST=$HISTSIZE
 
 # aliases
-alias c='ssh carrera.databits.net'
 alias ls='ls -F'
 alias d='dirs -v'
 alias pushd='pushd; dirs -v'
@@ -56,7 +65,7 @@ alias -g L='|less'
 alias -g H='|head'
 alias -g T='|tail'
 [ -x =ack-grep ] && alias ack='ack-grep'
-alias t='mkdir -m 0700 -p /tmp/$USER.$$; cd /tmp/$USER.$$'
+alias t='mkdir -m 0700 -p /tmp/$USER.$$ && cd /tmp/$USER.$$'
 unalias rm mv cp 2>/dev/null  # no -i madness
 
 # completion madness
@@ -75,35 +84,20 @@ function psg() {
 }
 
 function scp() {
-  found=false
+  remote=false
   for arg; do
     if [ "${arg%%:*}" != "${arg}" ]; then
-      found=true
+      remote=true
       break
     fi
   done
 
-  if ! $found; then
+  if ! $remote; then
     echo "scp: no remote location specified" >&2
     return 1
   fi
 
   =scp "$@"
-}
-
-function svn-tkdiff() {
-  svn st -q "$@" | while read mod file; do
-    if [ ! -f "$file" ]; then
-      continue
-    fi
-    if [ "$mod" = "A" ]; then
-      echo "$file (NEW)"
-      tkdiff /dev/null $file
-    else
-      echo "$file (MOD)"
-      tkdiff $file
-    fi
-  done
 }
 
 function title() {
@@ -115,7 +109,7 @@ function title() {
   local curdir="(%55<...<%~)"
   local location="${HOST}"
 
-  [ "$USERNAME" != "petef" ] && location="${USERNAME}@${location}"
+  $_me || location="${USERNAME}@${location}"
 
   # Special format for use with print -Pn
   cmd="%70>...>$cmd%<<"
@@ -124,7 +118,7 @@ function title() {
     screen*)
       # Put this in your .screenrc:
       # hardstatus string "[%n] %h - %t"
-      # termcapinfo xterm 'hs:ts=\E]2;:fs=\007:ds=\E]2;screen (not title yet)\007'
+      # termcapinfo xterm 'hs:ts=\E]2;:fs=\007:ds=\E]2;screen (no title yet)\007'
       print -Pn "\ek${cmd}\e\\"     # screen title (in windowlist)
       print -Pn "\e_${curdir} ${location}\e\\"  # screen location
       ;;
@@ -230,33 +224,28 @@ function stats() {
   '
 }
 
-function pastebin() {
-  local api_key_path="$HOME/.pastebin_api_key"
-  local api_key curl_opts
+function r() {
+  . ~/.zshenv
+  . ~/.zshrc
+  fixagent
+}
 
-  if [ ! -f "$api_key_path" ]; then
-    echo "pastebin: missing api key in $api_key_path" >&2
-    return 1
-  fi
+function fixagent() {
+  ssh-add -l >/dev/null 2>&1 && return
 
-  api_key=$(cat "$api_key_path")
-  curl_opts="--data-urlencode api_option=paste"
-  curl_opts="${curl_opts} --data-urlencode api_paste_private=1"
-  curl_opts="${curl_opts} --data-urlencode api_dev_key=$api_key"
-  curl_opts="${curl_opts} --data-urlencode api_paste_code@${1:--}"
-  curl_opts="${curl_opts} --data-urlencode api_paste_expire_date=1M"
-  if [ -n "$1" ]; then
-    curl_opts="${curl_opts} --data-urlencode api_paste_name=$1"
-  fi
-  if [ -n "$2" ]; then
-    curl_opts="${curl_opts} --data-urlencode api_paste_format=$2"
-  fi
-  curl ${curl_opts} http://pastebin.com/api/api_post.php
-  echo ""  # API doesn't return a newline
+  for f in $(find /tmp/ssh-* -maxdepth 1 -user $USER -type s -name 'agent*'); do
+    export SSH_AUTH_SOCK=$f
+    ssh-add -l >/dev/null 2>&1 && return
+  done
+
+  echo "Can't find a forwarded ssh-agent." >&2
+  unset SSH_AUTH_SOCK
 }
 
 # prompt
-[ "$USERNAME" != "petef" -a "$USERNAME" != "root" ] && u="${USERNAME}@"
+[ "$USERNAME" != "petef" -a \
+  "$USERNAME" != "pfritchman" -a \
+  "$USERNAME" != "root" ] && u="${USERNAME}@"
 export PS1="%? ${u}%m(%35<...<%~) %# "
 unset RPROMPT RPS1
 
