@@ -1,11 +1,10 @@
-
 # general
 umask 022
 HOST="${$(hostname)%%.*}"
 
 case $USER in
 petef|pfritchman) _me=true ;;
-*) me=false ;;
+*) _me=false ;;
 esac
 
 case $HOST in
@@ -20,8 +19,6 @@ bindkey "\e_" insert-last-word
 bindkey "\e*" expand-word
 bindkey "\e=" list-expand
 bindkey -r "\e/" # let the vi keymap pick this up
-bindkey -M vicmd k vi-up-line-or-history
-bindkey -M vicmd j vi-down-line-or-history
 bindkey -M viins '^r' history-incremental-search-backward
 bindkey -M vicmd '^r' history-incremental-search-backward
 autoload edit-command-line
@@ -54,19 +51,45 @@ fi
 HISTSIZE=1048576
 SAVEHIST=$HISTSIZE
 
+# shell-local history search
+vi-up-line-or-local-history() {
+  zle set-local-history 1
+  zle vi-up-line-or-history
+  zle set-local-history 0
+}
+
+vi-down-line-or-local-history() {
+  zle set-local-history 1
+  zle vi-down-line-or-history
+  zle set-local-history 0
+}
+
+zle -N vi-up-line-or-local-history
+zle -N vi-down-line-or-local-history
+bindkey -M vicmd k vi-up-line-or-local-history
+bindkey -M vicmd j vi-down-line-or-local-history
+
 # aliases
-alias ls='ls -F'
+[ -x =ack-grep ] && alias ack='ack-grep'
+alias be='bundle exec'
 alias d='dirs -v'
+alias ls='ls -F'
+alias ppv='puppet parser validate'
+alias t='mkdir -m 0700 -p /tmp/$USER.$$ && cd /tmp/$USER.$$'
+alias ub='stdbuf -oL'
+[ -x =vim ] && alias vi=vim
+unalias rm mv cp 2>/dev/null  # no -i madness
+
+# directory aliases
 alias pushd='pushd; dirs -v'
 alias popd='popd; dirs -v'
 for n in {1..9}; do alias ${n}="cd +${n}"; done
-[ -x =vim ] && alias vi=vim
+
+
+# global aliases
 alias -g L='|less'
 alias -g H='|head'
 alias -g T='|tail'
-[ -x =ack-grep ] && alias ack='ack-grep'
-alias t='mkdir -m 0700 -p /tmp/$USER.$$ && cd /tmp/$USER.$$'
-unalias rm mv cp 2>/dev/null  # no -i madness
 
 # completion madness
 compctl -g '*(-/D)' cd
@@ -75,12 +98,27 @@ compctl -g '*.pdf' acroread xpdf evince
 compctl -j -P '%' kill bg fg
 compctl -v export unset vared
 
-autoload -U compinit
-compinit
+if $_ws; then
+  autoload -U compinit
+  compinit
+fi
+
+# hooks
+autoload -U add-zsh-hook
 
 # custom functions
 function psg() {
   ps auxww | egrep -- $* | fgrep -v egrep
+}
+
+function ssh() {
+  if [[ "$TERM" != "${TERM%%screen*}" ]]; then
+    # downgrade to TERM=screen, not all remote hosts are capable of handling
+    # screen-256color. On ones that are, we upgrade $TERM in .zshenv.
+    env TERM=screen =ssh "$@"
+  else
+    =ssh "$@"
+  fi
 }
 
 function scp() {
@@ -130,6 +168,9 @@ function title() {
 
 function precmd() {
   title "-zsh"
+  if [ ! -e "$SSH_AUTH_SOCK" ]; then
+    fixagent
+  fi
 }
 
 function preexec() {
@@ -208,6 +249,7 @@ function stats() {
         median = input[n1];
       }
 
+      printf "total: %g\n", total;
       printf "min: %g\n", min;
       printf "max: %g\n", max;
       printf "range: %g\n", max - min;
@@ -233,9 +275,10 @@ function r() {
 function fixagent() {
   ssh-add -l >/dev/null 2>&1 && return
 
-  for f in $(find /tmp/ssh-* -maxdepth 1 -user $USER -type s -name 'agent*'); do
+  for f in $(find /tmp/ssh-* -maxdepth 1 -user $USER -type s -name 'agent*' 2>/dev/null); do
     export SSH_AUTH_SOCK=$f
-    ssh-add -l >/dev/null 2>&1 && return
+    timeout 3s ssh-add -l >/dev/null 2>&1 && return
+    rm -f $f    # dead
   done
 
   echo "Can't find a forwarded ssh-agent." >&2
@@ -243,17 +286,16 @@ function fixagent() {
 }
 
 # prompt
-[ "$USERNAME" != "petef" -a \
-  "$USERNAME" != "pfritchman" -a \
-  "$USERNAME" != "root" ] && u="${USERNAME}@"
-export PS1="%? ${u}%m(%35<...<%~) %# "
-unset RPROMPT RPS1
+if [ "$_me" == "false" -a "$USERNAME" != "root" ]; then
+  u="${USERNAME}@"
+fi
 
-# rvm
+# rvm (ruby) & nvm (node)
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
+[[ -s "$HOME/.nvm/nvm.sh" ]] && . "$HOME/.nvm/nvm.sh"
 
 if [[ -d "$HOME/.zsh" ]]; then
-  for file in $HOME/.zsh/*.zsh; do
+  for file in $HOME/.zsh/*.zsh(N); do
     . $file
   done
 fi
