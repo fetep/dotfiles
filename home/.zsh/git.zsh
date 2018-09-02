@@ -25,7 +25,7 @@ git_ref() {
 p() {
   local cmd
 
-  if [ -z "$_git_ref" ]; then
+  if [[ -z "$_git_ref" ]]; then
     echo "p: not in a git repo" >&2
     return 1
   fi
@@ -42,7 +42,7 @@ p() {
 
 # git status alias
 s() {
-  if [ -z "$_git_ref" ]; then
+  if [[ -z "$_git_ref" ]]; then
     echo "s: not in a git repo" >&2
     return 1
   fi
@@ -54,7 +54,7 @@ s() {
 u() {
   local cmd
 
-  if [ -z "$_git_ref" ]; then
+  if [[ -z "$_git_ref" ]]; then
     echo "u: not in a git repo" >&2
     return 1
   fi
@@ -89,7 +89,7 @@ git() {
 }
 
 git-backup() {
-  if [ -z "$_git_ref" ]; then
+  if [[ -z "$_git_ref" ]]; then
     echo "git-backup: not in a git repo" >&2
     return 1
   fi
@@ -104,7 +104,7 @@ git-backup() {
 }
 
 git-pushn() {
-  if [ -z "$_git_ref" ]; then
+  if [[ -z "$_git_ref" ]]; then
     echo "git-pushn: not in a git repo" >&2
     return 1
   fi
@@ -119,7 +119,7 @@ git-pushn() {
     sed -n -r -e 's,^.* ([0-9a-f]+\.\.[0-9a-f]+).*,\1,p'
   )
 
-  if [ -n "$range" ]; then
+  if [[ -n "$range" ]]; then
     git log $range
   fi
 

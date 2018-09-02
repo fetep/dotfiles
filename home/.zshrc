@@ -97,7 +97,7 @@ function psg() {
 function scp() {
   remote=false
   for arg; do
-    if [ "${arg%%:*}" != "${arg}" ]; then
+    if [[ "${arg%%:*}" != "${arg}" ]]; then
       remote=true
       break
     fi
@@ -157,12 +157,12 @@ function preexec() {
   # per zsh manpages, removing an element means assigning ()
   # TODO: support fg %-
   args[${#args}]=()
-  if [ "${args[1]}" = "fg" ] ; then
+  if [[ "${args[1]}" == "fg" ]] ; then
     local jobnum="${args[2]}"
-    if [ -z "$jobnum" ] ; then
+    if [[ -z "$jobnum" ]] ; then
       # If no jobnum specified, find the current job.
       for i in ${(k)jobtexts}; do
-        [ -z "${jobstates[$i]%%*:+:*}" ] && jobnum=$i
+        [[ -z "${jobstates[$i]%%*:+:*}" ]] && jobnum=$i
       done
     fi
     cmd="${jobtexts[${jobnum#%}]}"
@@ -240,7 +240,7 @@ function r() {
 }
 
 function fixagent() {
-  [ -x =timeout ] && to="timeout 2"
+  [[ -x =timeout ]] && to="timeout 2"
   $to ssh-add -l >/dev/null 2>&1 && return
 
   for f in $(find /tmp/ssh-* -maxdepth 1 -user $USER -type s -name 'agent*'); do

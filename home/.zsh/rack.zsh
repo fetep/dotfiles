@@ -25,23 +25,16 @@ update-rack-vars() {
 add-zsh-hook precmd update-rack-vars
 
 re() {
-  if [ -z "$_rack_dir" ]; then
+  if [[ -z "$_rack_dir" ]]; then
     echo "re: not in a rack project" >&2
     return 1
   fi
 
   case $1 in
-    prod)
-      RACK_ENV="prod"
-      ;;
-    p*)
-      RACK_ENV="production"
-      ;;
-    t*)
-      RACK_ENV="test"
-      ;;
-    *)
-      RACK_ENV="development"
+    d) RACK_ENV="development" ;;
+    p) RACK_ENV="production" ;;
+    t) RACK_ENV="test" ;;
+    *) RACK_ENV=$1 ;;
   esac
 
   export RACK_ENV
