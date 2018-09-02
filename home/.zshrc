@@ -7,11 +7,6 @@ petef|pfritchman) _me=true ;;
 *) _me=false ;;
 esac
 
-case $HOST in
-*-desk|fetep-work|nyc-it-petenix) _ws=true ;;
-*) _ws=false ;;
-esac
-
 # vi mode, inspired by ksh
 setopt vi
 setopt nonomatch
@@ -43,7 +38,7 @@ setopt hist_ignore_all_dups
 setopt hist_reduce_blanks
 setopt hist_ignore_space
 setopt share_history
-if $_me; then
+if [[ "$_me" == "true" ]]; then
     HISTFILE=$HOME/.history_zsh
 else
     HISTFILE=$HOME/.history_zsh_$USER
@@ -70,26 +65,18 @@ bindkey -M vicmd k vi-up-line-or-local-history
 bindkey -M vicmd j vi-down-line-or-local-history
 
 # aliases
-[ -x =ack-grep ] && alias ack='ack-grep'
+for n in {1..9}; do alias ${n}="cd +${n}"; done
+alias -g L='|less'
+[[ -x =ack-grep ]] && alias ack='ack-grep'
 alias be='bundle exec'
 alias d='dirs -v'
 alias ls='ls -F'
-alias ppv='puppet parser validate'
-alias t='mkdir -m 0700 -p /tmp/$USER.$$ && cd /tmp/$USER.$$'
-alias ub='stdbuf -oL'
-[ -x =vim ] && alias vi=vim
-unalias rm mv cp 2>/dev/null  # no -i madness
-
-# directory aliases
-alias pushd='pushd; dirs -v'
 alias popd='popd; dirs -v'
-for n in {1..9}; do alias ${n}="cd +${n}"; done
+alias pushd='pushd; dirs -v'
+alias t='mkdir -m 0700 -p /tmp/$USER.$$ && cd /tmp/$USER.$$'
+[[ -x =vim ]] && alias vi=vim
 
-
-# global aliases
-alias -g L='|less'
-alias -g H='|head'
-alias -g T='|tail'
+unalias rm mv cp 2>/dev/null  # no -i madness
 
 # completion madness
 compctl -g '*(-/D)' cd
@@ -98,27 +85,13 @@ compctl -g '*.pdf' acroread xpdf evince
 compctl -j -P '%' kill bg fg
 compctl -v export unset vared
 
-if $_ws; then
-  autoload -U compinit
-  compinit
-fi
-
-# hooks
 autoload -U add-zsh-hook
+autoload -U compinit
+compinit
 
 # custom functions
 function psg() {
   ps auxww | egrep -- $* | fgrep -v egrep
-}
-
-function ssh() {
-  if [[ "$TERM" != "${TERM%%screen*}" ]]; then
-    # downgrade to TERM=screen, not all remote hosts are capable of handling
-    # screen-256color. On ones that are, we upgrade $TERM in .zshenv.
-    env TERM=screen =ssh "$@"
-  else
-    =ssh "$@"
-  fi
 }
 
 function scp() {
@@ -168,9 +141,6 @@ function title() {
 
 function precmd() {
   title "-zsh"
-  if [ ! -e "$SSH_AUTH_SOCK" ]; then
-    fixagent
-  fi
 }
 
 function preexec() {
@@ -181,7 +151,7 @@ function preexec() {
   # add '--' in case $1 is only one word to work around a bug in ${(z)foo}
   # in zsh 4.3.9.
   tmpcmd="$1 --"
-  args=${(z)tmpcmd}
+  args=(${(z)tmpcmd})
 
   # remove the '--' we added as a bug workaround..
   # per zsh manpages, removing an element means assigning ()
@@ -196,7 +166,6 @@ function preexec() {
       done
     fi
     cmd="${jobtexts[${jobnum#%}]}"
-  else
   fi
   title "$cmd"
 }
@@ -204,10 +173,9 @@ function preexec() {
 # randomizes order of stdin or given file
 function rand() {
   RANDOM=$RANDOM`date +%s`        # seed
-  while IFS= read -r in
-  do
+  while IFS= read -r in; do
     echo ${RANDOM}${RANDOM} "$in"
-  done < ${1:-/dev/stdin} | sort | sed -e 's,^[0-9]* ,,'
+  done < ${1:-/dev/stdin} | sort -n | sed -e 's,^[0-9]* ,,'
 }
 
 function stats() {
@@ -249,7 +217,6 @@ function stats() {
         median = input[n1];
       }
 
-      printf "total: %g\n", total;
       printf "min: %g\n", min;
       printf "max: %g\n", max;
       printf "range: %g\n", max - min;
@@ -273,29 +240,31 @@ function r() {
 }
 
 function fixagent() {
-  ssh-add -l >/dev/null 2>&1 && return
+  [ -x =timeout ] && to="timeout 2"
+  $to ssh-add -l >/dev/null 2>&1 && return
 
-  for f in $(find /tmp/ssh-* -maxdepth 1 -user $USER -type s -name 'agent*' 2>/dev/null); do
+  for f in $(find /tmp/ssh-* -maxdepth 1 -user $USER -type s -name 'agent*'); do
     export SSH_AUTH_SOCK=$f
-    timeout 3s ssh-add -l >/dev/null 2>&1 && return
-    rm -f $f    # dead
+    $to ssh-add -l >/dev/null 2>&1 && return
   done
 
-  echo "Can't find a forwarded ssh-agent." >&2
   unset SSH_AUTH_SOCK
 }
 
-# prompt
-if [ "$_me" == "false" -a "$USERNAME" != "root" ]; then
-  u="${USERNAME}@"
+# prompt; more in .zsh/prompt.zsh
+if [[ $_me == "false" && $USERNAME != "root" ]]; then
+  _u="${USERNAME}@"
 fi
 
-# rvm (ruby) & nvm (node)
+export PS1="%? ${_u}%m(%35<...<%~) %# "
+unset RPROMPT RPS1
+
+# rvm
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
-[[ -s "$HOME/.nvm/nvm.sh" ]] && . "$HOME/.nvm/nvm.sh"
 
-if [[ -d "$HOME/.zsh" ]]; then
-  for file in $HOME/.zsh/*.zsh(N); do
-    . $file
-  done
-fi
+fpath=("$HOME/.zsh/func" $fpath)
+autoload add-zsh-hook
+
+for file in $HOME/.zsh/*.zsh(N); do
+  . $file
+done

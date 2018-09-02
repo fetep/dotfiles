@@ -23,6 +23,18 @@ prompt_git_status() {
     done
   fi
 
+  #integer ahead="0"
+  #local branch="$(command git branch -v | awk '/^\* / { print $4,$5; }')"
+  #if [[ -n "$branch" ]]; then
+  #  if [[ $branch[(w)1] = "[ahead" ]]; then
+  #    echo "q" >&2
+  #    ahead=$branch[(w)2]
+  #    echo "w q=\"$q\"" >&2
+  #  fi
+  #fi
+
+  #echo "ahead=\"$ahead\"" >&2
+
   local color
   if [[ $dirty -eq 1 ]]; then
     color="yellow"
@@ -34,9 +46,14 @@ prompt_git_status() {
 
   echo -n -e "{ git: %{$fg_bold[$color]%}${_git_ref}%{%f%b%} "
 
+
   for k in "${(@k)summary}"; do
     echo -n "[$k:$summary[$k]] "
   done
+
+  #if [[ $ahead -ne 0 ]]; then
+  #  echo -n "[ahead:$ahead] "
+  #fi
 
   echo -n "} "
 
@@ -71,7 +88,7 @@ prompt_rc() {
 
 prompt_context() {
   [[ "$_me" = "false" ]] && u="${USERNAME}@"
-  echo -n "${u}%m(%35<...<%~) "
+  echo -n "${u}${HOST}(%35<...<%~) "
 }
 
 prompt_git() {

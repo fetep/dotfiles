@@ -1,5 +1,3 @@
-" $Id: .vimrc 33 2010-12-15 21:10:05Z petef $
-
 if has("syntax")
   syntax on
 endif
@@ -50,7 +48,7 @@ map ,p :set invpaste paste?<CR>
 map ,2 :set sts=2 sw=2<CR>
 map ,4 :set sts=4 sw=4<CR>
 
-" more intelligent moving around between functions
+" more intelligent function navigation
 :map [[ :let @z=@/<CR>?{<CR>w99[{:let @/=@z<CR>
 :map ][ :let @z=@/<CR>/}<CR>b99]}:let @/=@z<CR>
 :map ]] :let @z=@/<CR>j0[[%/{<CR>:let @/=@z<CR>
@@ -69,7 +67,6 @@ if &term == "screen" || &term == "screen-256color"
   set t_ts=k
   set t_fs=\
 endif
-if &term == "screen" || &term == "xterm" || &term == "screen-256color"
+if &term == "screen" || &term == "screen-256color" || &term == "xterm"
   set title
-  " colorscheme zenburn
 endif
