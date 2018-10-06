@@ -70,7 +70,7 @@ alias -g L='|less'
 [[ -x =ack-grep ]] && alias ack='ack-grep'
 alias be='bundle exec'
 alias d='dirs -v'
-alias ls='ls -F'
+alias ls='ls -F --color'
 alias popd='popd; dirs -v'
 alias pushd='pushd; dirs -v'
 alias t='mkdir -m 0700 -p /tmp/$USER.$$ && cd /tmp/$USER.$$'
@@ -206,6 +206,11 @@ unset RPROMPT RPS1
 
 # rvm
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
+
+# dircolors
+if [[ -e ~/.dir_colors ]]; then
+  eval $(dircolors ~/.dir_colors)
+fi
 
 fpath=("$HOME/.zsh/func" $fpath)
 autoload add-zsh-hook
