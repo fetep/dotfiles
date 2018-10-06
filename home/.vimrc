@@ -1,8 +1,12 @@
 if has("syntax")
   syntax on
 endif
+
+syntax enable
 set background=dark
 set t_Co=256
+map ,c :let g:solarized_termcolors=256<CR>:colorscheme solarized<CR>
+colorscheme solarized
 
 set nocompatible
 set incsearch
