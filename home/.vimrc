@@ -1,13 +1,10 @@
-if has("syntax")
-  syntax on
-endif
-
+" solarized
 syntax enable
 set background=dark
 set t_Co=256
-map ,c :let g:solarized_termcolors=256<CR>:colorscheme solarized<CR>
 colorscheme solarized
 
+" general options
 set nocompatible
 set incsearch
 set smartcase
@@ -34,7 +31,7 @@ autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
 autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 
-" file type settings
+" file type
 filetype plugin on
 filetype on
 autocmd BufNewFile,BufRead,BufEnter Capfile set ft=ruby
@@ -44,13 +41,14 @@ autocmd FileType make set noet sts=8 sw=8
 autocmd FileType json set sts=3 sw=3
 
 " mappings
-map ,t :set noet sts=8 sw=8 nolist<CR>
-map ,r :set syntax=ruby<CR>
+map ,2 :set sts=2 sw=2<CR>
+map ,4 :set sts=4 sw=4<CR>
+map ,c :let g:solarized_termcolors=256<CR>:colorscheme solarized<CR>
 map ,m :noh<CR>
 map ,n :noh<CR>
 map ,p :set invpaste paste?<CR>
-map ,2 :set sts=2 sw=2<CR>
-map ,4 :set sts=4 sw=4<CR>
+map ,r :set syntax=ruby<CR>
+map ,t :set noet sts=8 sw=8 nolist<CR>
 
 " more intelligent function navigation
 :map [[ :let @z=@/<CR>?{<CR>w99[{:let @/=@z<CR>
