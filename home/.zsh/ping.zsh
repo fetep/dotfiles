@@ -1,4 +1,7 @@
 function pingw() {
+  setopt localtraps
+  trap return 2 INT
+
   local last_state="_"
   local state
 
