@@ -1,60 +1,59 @@
+set nocompatible
+let mapleader = ","
+
+" load vundle
+" :PluginList, :PluginInstall, :PluginSearch foo, :PluginClean
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'fatih/vim-go'
+Plugin 'hashivim/vim-terraform'
+Plugin 'tpope/vim-fugitive' " git
+Plugin 'VundleVim/Vundle.vim'
+call vundle#end()
+filetype plugin indent on
+map <leader>V :PluginInstall<CR>
+
 " solarized
 syntax enable
 set background=dark
 set t_Co=256
-colorscheme solarized
+"colorscheme solarized
 
 " general options
-set nocompatible
 set incsearch
 set smartcase
 set ignorecase
 set hlsearch
 set showmode
 set backspace=indent,eol,start
+set autowrite
 
 set ai
 set ruler
 set showmatch
-set autowrite
 set scrolloff=10  " guaranteed context lines
 
 " style
-set sts=2 sw=2 et
+set ts=2 sw=2 et
 set shiftround
 set list
 set listchars=tab:>-
 
+autocmd BufNewFile,BufRead Makefile setlocal noet nolist ts=8 sw=8
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
 autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
 autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 
-" file type
-filetype plugin on
-filetype on
-autocmd BufNewFile,BufRead,BufEnter Capfile set ft=ruby
-autocmd BufNewFile,BufRead,BufEnter *.json set ft=json
-
-autocmd FileType make set noet sts=8 sw=8
-autocmd FileType json set sts=3 sw=3
-
 " mappings
-map ,2 :set sts=2 sw=2<CR>
-map ,4 :set sts=4 sw=4<CR>
-map ,c :let g:solarized_termcolors=256<CR>:colorscheme solarized<CR>
-map ,m :noh<CR>
-map ,n :noh<CR>
-map ,p :set invpaste paste?<CR>
-map ,r :set syntax=ruby<CR>
-map ,t :set noet sts=8 sw=8 nolist<CR>
-
-" more intelligent function navigation
-:map [[ :let @z=@/<CR>?{<CR>w99[{:let @/=@z<CR>
-:map ][ :let @z=@/<CR>/}<CR>b99]}:let @/=@z<CR>
-:map ]] :let @z=@/<CR>j0[[%/{<CR>:let @/=@z<CR>
-:map [] :let @z=@/<CR>k$][%?}<CR>:let @/=@z<CR>
+map <leader>2 :set ts=2 sw=2<CR>
+map <leader>4 :set ts=4 sw=4<CR>
+map <leader>m :noh<CR>
+map <leader>n :noh<CR>
+map <leader>p :set invpaste paste?<CR>
+map <leader>t :set noet ts=8 sw=8 nolist<CR>
 
 " reformat current paragraph
 :nmap Q gqap
@@ -72,3 +71,25 @@ endif
 if &term == "screen" || &term == "screen-256color" || &term == "xterm"
   set title
 endif
+
+" go
+let g:go_highlight_build_constraints = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_types = 1
+let g:go_metalinter_autosave = 0
+autocmd BufNewFile,BufRead *.go setlocal noet nolist ts=4 sw=4 textwidth=100
+map <C-n> :cnext<CR>
+map <C-m> :cprevious<CR>
+nnoremap <leader>a :cclose<CR>
+autocmd FileType go nmap <leader>b  <Plug>(go-build)
+autocmd FileType go nmap <leader>r  <Plug>(go-run)
+let g:go_fmt_command = "$GO/bin/goimports"
+"let g:go_gopls_enabled = 0
+
+" terraform
+let g:terraform_align=1
+let g:terraform_fmt_on_save=1
