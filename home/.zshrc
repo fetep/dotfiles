@@ -74,6 +74,7 @@ alias ls='ls -F --color'
 alias popd='popd; dirs -v'
 alias pushd='pushd; dirs -v'
 alias t='mkdir -m 0700 -p /tmp/$USER.$$ && cd /tmp/$USER.$$'
+alias tmux='tmux -2'
 [[ -x =vim ]] && alias vi=vim
 
 unalias rm mv cp 2>/dev/null  # no -i madness
@@ -117,21 +118,26 @@ function title() {
   # Also use ${(V) ...} to make nonvisible chars printable (think cat -v)
   # Replace newlines with '; '
   local cmd="${${${(V)1//\%/\%\%}//'\n'/; }//'\t'/ }"
-  local curdir="(%55<...<%~)"
+  local curdir="(%30<...<%~)"
   local location="${HOST}"
 
   $_me || location="${USERNAME}@${location}"
 
-  # Special format for use with print -Pn
-  cmd="%70>...>$cmd%<<"
+  cmd="%$((COLUMNS-30))>...>$cmd%<<"
   unset PROMPT_SUBST
   case $TERM in
     screen*)
-      # Put this in your .screenrc:
-      # hardstatus string "[%n] %h - %t"
-      # termcapinfo xterm 'hs:ts=\E]2;:fs=\007:ds=\E]2;screen (no title yet)\007'
-      print -Pn "\ek${cmd}\e\\"     # screen title (in windowlist)
-      print -Pn "\e_${curdir} ${location}\e\\"  # screen location
+      if [[ -n "$TMUX" ]]; then
+        if [[ $1 == "-zsh" || $1 == "zsh" ]]; then
+          print -Pn "\ek \e\\"                # window_name (empty)
+        else
+          print -Pn "\ek${cmd}\e\\"               # window_name
+        fi
+        print -Pn "\e_${location}${curdir}\e\\"   # pane_title
+      else
+        print -Pn "\ek${cmd}\e\\"                 # screen title
+        print -Pn "\e_${curdir} ${location}\e\\"  # screen location
+      fi
       ;;
     xterm*)
       print -Pn "\e]0;${cmd} - ${location}${curdir}\a"
