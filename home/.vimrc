@@ -1,18 +1,8 @@
 set nocompatible
 let mapleader = ","
 
-" load vundle
-" :PluginList, :PluginInstall, :PluginSearch foo, :PluginClean
-filetype off
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-Plugin 'fatih/vim-go'
-Plugin 'hashivim/vim-terraform'
-Plugin 'tpope/vim-fugitive' " git
-Plugin 'VundleVim/Vundle.vim'
-call vundle#end()
-filetype plugin indent on
-map <leader>V :PluginInstall<CR>
+" https://github.com/tpope/vim-pathogen
+execute pathogen#infect()
 
 " solarized
 syntax enable
@@ -39,6 +29,8 @@ set ts=2 sw=2 et
 set shiftround
 set list
 set listchars=tab:>-
+
+filetype plugin indent on
 
 autocmd BufNewFile,BufRead Makefile setlocal noet nolist ts=8 sw=8
 highlight ExtraWhitespace ctermbg=red guibg=red
