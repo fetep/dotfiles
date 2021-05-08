@@ -1,7 +1,15 @@
 # sourced on every zsh invocation except if -f is given.
 
 typeset -U path
-path=(~/bin "$path[@]")
+
+if [[ -d ~/.local/bin ]]; then
+  path=(~/.local/bin "$path[@]")
+fi
+
+if [[ -d ~/bin ]]; then
+  path=(~/bin "$path[@]")
+fi
+
 path+=(/usr/local/bin)
 path+=(/usr/bin)
 path+=(/bin)
