@@ -18,9 +18,10 @@ dotdir="$base/home"
 
 mkdir -p -m 0700 "$backdir"
 
-find "$dotdir" -type f | sed -e "s,^$dotdir/,," |
-while read dotfile; do
-  dotpath=$(dirname $dotfile)
+(cd "$dotdir" && find . -type f -print0) |
+while IFS= read -r -d '' dotfile; do
+  dotfile=${dotfile##./}
+  dotpath=$(dirname "$dotfile")
 
   if [[ -e "$HOME/$dotfile" && ! -L "$HOME/$dotfile" ]]; then
     mkdir -p "$backdir/$dotpath"
