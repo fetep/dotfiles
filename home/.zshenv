@@ -1,6 +1,6 @@
 # sourced on every zsh invocation except if -f is given.
 
-typeset -U path
+typeset -Ug path
 
 if [[ -d ~/.local/bin ]]; then
   path=(~/.local/bin "$path[@]")
