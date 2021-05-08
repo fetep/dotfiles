@@ -3,7 +3,7 @@ umask 022
 HOST="${$(hostname)%%.*}"
 
 case $USER in
-petef*|pfritchman) _me=true ;;
+petef*|pfritchman|pf*) _me=true ;;
 *) _me=false ;;
 esac
 
