@@ -194,7 +194,7 @@ function fixagent() {
   [[ -x =timeout ]] && to="timeout 2"
   $to ssh-add -l >/dev/null 2>&1 && return
 
-  for f in $(find /tmp/ssh-* -maxdepth 1 -user $USER -type s -name 'agent*'); do
+  for f in $(find /tmp/ssh-* -maxdepth 1 -user $USER -type s -name 'agent*' 2>/dev/null); do
     export SSH_AUTH_SOCK=$f
     $to ssh-add -l >/dev/null 2>&1 && return
   done
