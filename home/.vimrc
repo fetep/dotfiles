@@ -32,7 +32,7 @@ set listchars=tab:>-
 
 filetype plugin indent on
 
-autocmd BufNewFile,BufRead Makefile setlocal noet nolist ts=8 sw=8
+autocmd BufNewFile,BufRead Makefile setlocal noet nolist ts=8 sts=8 sw=8
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
 autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
@@ -40,12 +40,12 @@ autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 
 " mappings
-map <leader>2 :set ts=2 sw=2<CR>
-map <leader>4 :set ts=4 sw=4<CR>
+map <leader>2 :set ts=2 sts=2 sw=2<CR>
+map <leader>4 :set ts=4 sts=4 sw=4<CR>
 map <leader>m :noh<CR>
 map <leader>n :noh<CR>
 map <leader>p :set invpaste paste?<CR>
-map <leader>t :set noet ts=8 sw=8 nolist<CR>
+map <leader>t :set noet ts=8 sts=8 sw=8 nolist<CR>
 
 " reformat current paragraph
 :nmap Q gqap
@@ -73,7 +73,7 @@ let g:go_highlight_functions = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_types = 1
 let g:go_metalinter_autosave = 0
-autocmd BufNewFile,BufRead *.go setlocal noet nolist ts=4 sw=4 textwidth=100
+autocmd BufNewFile,BufRead *.go setlocal noet nolist ts=4 sts=4 sw=4 textwidth=100
 map <C-n> :cnext<CR>
 map <C-m> :cprevious<CR>
 nnoremap <leader>a :cclose<CR>
