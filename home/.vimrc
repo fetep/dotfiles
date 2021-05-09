@@ -33,6 +33,7 @@ set listchars=tab:>-
 filetype plugin indent on
 
 autocmd BufNewFile,BufRead Makefile setlocal noet nolist ts=8 sts=8 sw=8
+autocmd BufNewFile,BufRead *.py setlocal ts=2 sts=2 sw=2
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
 autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
