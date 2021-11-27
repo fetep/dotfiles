@@ -202,14 +202,6 @@ function fixagent() {
   unset SSH_AUTH_SOCK
 }
 
-# prompt; more in .zsh/prompt.zsh
-if [[ $_me == "false" && $USERNAME != "root" ]]; then
-  _u="${USERNAME}@"
-fi
-
-export PS1="%? ${_u}%m(%35<...<%~) %# "
-unset RPROMPT RPS1
-
 # rvm
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
 
