@@ -2,7 +2,7 @@
 # symlink files in $HOME to this checkout
 # if any existing files are there, we save them in ./backup
 
-progname=$(basename $0)
+progname="$(basename "$0")"
 
 err() {
   log "$@" >&2
@@ -12,7 +12,8 @@ log() {
   echo "$progname: ""$@"
 }
 
-base=$(readlink -f $(dirname $0))
+cd "$(dirname "$0")"
+base=$PWD
 backdir="$base/backup"
 dotdir="$base/home"
 
