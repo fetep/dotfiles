@@ -201,7 +201,9 @@ fi
 fpath=("$HOME/.zsh/func" $fpath)
 autoload add-zsh-hook
 
-DEVSHELL_EXTRA_MOUNTS="/data /tmp"
+if [[ -e "/data" ]]; then
+  DEVSHELL_EXTRA_MOUNTS="/data"
+fi
 DEVSHELL_IMAGE=fetep/devshell
 
 for file in $HOME/.zsh/*.zsh(N); do
