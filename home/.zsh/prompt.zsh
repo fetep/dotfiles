@@ -6,7 +6,7 @@ colors
 
 prompt_git_status() {
   if [[ -z $_git_ref ]]; then
-    return 0
+    return
   fi
 
   local dirty=0
@@ -57,12 +57,12 @@ prompt_git_status() {
 
   echo -n "} "
 
-  return 1
+  _pre_prompt=1
 }
 
 prompt_rack_env() {
   if [[ -z $_rack_dir ]]; then
-    return 0
+    return
   fi
 
   local color=0
@@ -75,7 +75,7 @@ prompt_rack_env() {
       echo -n -e "{ RACK_ENV: ${RACK_ENV} } "
   esac
 
-  return 1
+  _pre_prompt=1
 }
 
 prompt_rc() {
@@ -113,20 +113,29 @@ prompt_git_branch() {
   fi
 }
 
+prompt_kube_context() {
+  if [[ -z "$_kube_prompt" ]]; then
+    return
+  fi
+
+  echo -n -e "{ kube: ${_kube_context} } "
+  _pre_prompt=1
+}
+
 prompt_end() {
   echo -n "%# "
 }
 
 build_prompt() {
   RETVAL=$?
+  _pre_prompt=""
 
   # first optional line
   prompt_git_status
-  git_rc=$?
   prompt_rack_env
-  rack_rc=$?
+  prompt_kube_context
 
-  if [[ $git_rc -eq 1 || $rack_rc -eq 1 ]]; then
+  if [[ -n "$_pre_prompt" ]]; then
     echo ""
   fi
 
@@ -139,3 +148,4 @@ build_prompt() {
 setopt prompt_subst
 
 PROMPT='%{%f%b%k%}$(build_prompt)'
+unset RPROMPT RPS1
