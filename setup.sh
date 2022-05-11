@@ -2,11 +2,7 @@
 # symlink files in $HOME to this checkout
 # if any existing files are there, we save them in ./backup
 
-progname="$(basename "$0")"
-
-err() {
-  log "$@" >&2
-}
+progname="${0##*/}"
 
 log() {
   echo "$progname: ""$@"
@@ -19,10 +15,13 @@ dotdir="$base/home"
 
 mkdir -p -m 0700 "$backdir"
 
-(cd "$dotdir" && find . -type f -print0) |
-while IFS= read -r -d '' dotfile; do
-  dotfile=${dotfile##./}
-  dotpath=$(dirname "$dotfile")
+# update submodules on a fresh checkout
+git submodule init
+git submodule update --recursive
+
+link() {
+  local dotfile="$1"
+  local dotpath="$(dirname "$dotfile")"
 
   if [[ -e "$HOME/$dotfile" && ! -L "$HOME/$dotfile" ]]; then
     mkdir -p "$backdir/$dotpath"
@@ -32,8 +31,8 @@ while IFS= read -r -d '' dotfile; do
 
   link_target="$dotdir/$dotfile"
   if [[ -L "$HOME/$dotfile" ]]; then
-    existing=$(readlink -f "$HOME/$dotfile")
-    if [[ $existing != $link_target ]]; then
+    existing="$(readlink -f "$HOME/$dotfile")"
+    if [[ "$existing" != "$link_target" ]]; then
       log "swapping $HOME/$dotfile from $existing to $link_target"
       ln -sf "$link_target" "$HOME/$dotfile"
     fi
@@ -42,4 +41,16 @@ while IFS= read -r -d '' dotfile; do
     log "linking $HOME/$dotfile to $dotdir/$dotfile"
     ln -s "$dotdir/$dotfile" "$HOME/$dotfile"
   fi
+}
+
+(cd "$dotdir" && find . -type f \! -path './.vim/bundle/*' -print0) |
+while IFS= read -r -d '' dotfile; do
+  link "${dotfile##./}"
+done
+
+# symlink vim bundles
+mkdir -p ~/.vim/bundle
+(cd "$dotdir/.vim/bundle" && ls) |
+while read bundle; do
+  link ".vim/bundle/$bundle"
 done
