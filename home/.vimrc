@@ -80,7 +80,7 @@ map <C-m> :cprevious<CR>
 nnoremap <leader>a :cclose<CR>
 autocmd FileType go nmap <leader>b  <Plug>(go-build)
 autocmd FileType go nmap <leader>r  <Plug>(go-run)
-let g:go_fmt_command = "$GO/bin/goimports"
+let g:go_fmt_command = "$GOROOT/bin/goimports"
 "let g:go_gopls_enabled = 0
 
 " terraform
