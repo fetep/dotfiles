@@ -194,7 +194,7 @@ function r() {
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
 
 # dircolors
-if [[ -e ~/.dir_colors ]]; then
+if [[ -e ~/.dir_colors && -x =dircolors ]]; then
   eval $(dircolors ~/.dir_colors)
 fi
 
