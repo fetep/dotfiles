@@ -190,18 +190,6 @@ function r() {
   fixagent
 }
 
-function fixagent() {
-  [[ -x =timeout ]] && to="timeout 2"
-  $to ssh-add -l >/dev/null 2>&1 && return
-
-  for f in $(find /tmp/ssh-* -maxdepth 1 -user $USER -type s -name 'agent*' 2>/dev/null); do
-    export SSH_AUTH_SOCK=$f
-    $to ssh-add -l >/dev/null 2>&1 && return
-  done
-
-  unset SSH_AUTH_SOCK
-}
-
 # rvm
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
 
@@ -212,6 +200,9 @@ fi
 
 fpath=("$HOME/.zsh/func" $fpath)
 autoload add-zsh-hook
+
+DEVSHELL_EXTRA_MOUNTS="/data /tmp"
+DEVSHELL_IMAGE=fetep/devshell
 
 for file in $HOME/.zsh/*.zsh(N); do
   . $file
