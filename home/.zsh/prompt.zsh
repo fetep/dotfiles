@@ -87,8 +87,10 @@ prompt_rc() {
 }
 
 prompt_context() {
+  local d u
   [[ "$_me" = "false" ]] && u="${USERNAME}@"
-  echo -n "${u}${HOST}(%35<...<%~) "
+  [[ -n "$DEVSHELL" ]] && d="[${DEVSHELL}]"
+  echo -n "${u}${HOST}${d}(%35<...<%~) "
 }
 
 prompt_git() {
