@@ -31,6 +31,8 @@ setopt pushd_ignore_dups
 setopt nohup
 setopt extendedglob
 setopt nocorrect
+setopt prompt_cr
+setopt prompt_sp
 
 # history
 setopt extended_history
