@@ -16,6 +16,8 @@ function fixagent() {
   if [[ -e "$local_agent" ]]; then
     export SSH_AUTH_SOCK="$local_agent"
     $to ssh-add -l >/dev/null 2>&1 && return
+    # if we have a stale agent socket, remove it so we can start a new one
+    rm -f "$local_agent"
   fi
 
   # if we have local keys, start an agent
