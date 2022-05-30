@@ -29,6 +29,8 @@ else
   export PAGER=more
 fi
 READNULLCMD=$PAGER
+export SYSTEMD_PAGER=$PAGER
+export SYSTEMD_LESS=$LESS
 
 # vi
 if [[ -x =vim ]]; then
