@@ -89,7 +89,7 @@ prompt_rc() {
 prompt_context() {
   local d u
   [[ "$_me" = "false" ]] && u="${USERNAME}@"
-  [[ -n "$DEVSHELL" ]] && d="[${DEVSHELL}]"
+  [[ -n "$DEVSHELL" ]] && d="/${DEVSHELL}"
   echo -n "${u}${HOST}${d}(%35<...<%~) "
 }
 
