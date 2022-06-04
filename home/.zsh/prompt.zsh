@@ -90,7 +90,7 @@ prompt_context() {
   local u h=$HOST
   [[ "$_me" = "false" ]] && u="${USERNAME}@"
   if [[ -n "$DEVSHELL" ]]; then
-    h="${h%%-ds-*}/${DEVSHELL}"
+    h="${h%%-ds-*}-ds/${DEVSHELL}"
   fi
   echo -n "${u}${h}(%35<...<%~) "
 }
