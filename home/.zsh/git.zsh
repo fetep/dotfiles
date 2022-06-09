@@ -47,7 +47,7 @@ s() {
     return 1
   fi
 
-  git status
+  git status "$@"
 }
 
 # git update alias
