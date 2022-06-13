@@ -10,6 +10,10 @@ if [[ -d ~/bin ]]; then
   path=(~/bin "$path[@]")
 fi
 
+if [[ -d /var/lib/snapd/snap/bin ]]; then
+  path+=(/var/lib/snapd/snap/bin)
+fi
+
 path+=(/usr/local/bin)
 path+=(/usr/bin)
 path+=(/bin)
