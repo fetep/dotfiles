@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# run different flavors of terminals
+# class instances for lxde <application> configs and some attached to tmux
+
+progname=${0##*/}
+
+log() {
+  echo "$progname: ""$@"
+}
+
+err() {
+  log "$@" >&2
+}
+
+usage() {
+  echo "Usage: $progname [type]"
+  echo ""
+  echo "types:"
+  echo "main      main terminals, on desktop 1"
+  echo "misc      misc terminal w/tmux, on desktop 4"
+  echo "scratch   scratch terminal w/tmux, on all desktops"
+}
+
+if [[ $# -gt 1 ]]; then
+  err "too many arguments"
+  usage >&2
+  exit 1
+fi
+
+term_type=$1
+case "$term_type" in
+  main)
+    exec alacritty -o 'window.class.instance=main'
+    ;;
+  misc)
+    exec alacritty -o 'window.class.instance=misc' -e tmux new-session -As misc
+    ;;
+  scratch)
+    exec alacritty -o 'window.class.instance=scratch' -e tmux new-session -As scratch
+    ;;
+  '')
+    exec alacritty
+    ;;
+  *)
+    err "$term_type: unknown term type"
+    usage >&2
+    exit 2
+    ;;
+esac
