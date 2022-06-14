@@ -27,7 +27,7 @@
   <placement>
     <policy>Smart</policy>
     <!-- 'Smart' or 'UnderMouse' -->
-    <center>yes</center>
+    <center>no</center>
     <!-- whether to place windows in the center of the free area found or
        the top left corner -->
     <monitor>Mouse</monitor>
@@ -222,22 +222,22 @@
         <desktop>4</desktop>
       </action>
     </keybind>
-    <keybind key="M-1">
+    <keybind key="W-1">
       <action name="Desktop">
         <desktop>1</desktop>
       </action>
     </keybind>
-    <keybind key="M-2">
+    <keybind key="W-2">
       <action name="Desktop">
         <desktop>2</desktop>
       </action>
     </keybind>
-    <keybind key="M-3">
+    <keybind key="W-3">
       <action name="Desktop">
         <desktop>3</desktop>
       </action>
     </keybind>
-    <keybind key="M-4">
+    <keybind key="W-4">
       <action name="Desktop">
         <desktop>4</desktop>
       </action>
@@ -254,7 +254,7 @@
     <keybind key="W-d">
       <action name="ToggleShowDesktop"/>
     </keybind>
-    <keybind key="A-enter">
+    <keybind key="A-Return">
       <action name="ToggleMaximizeFull"/>
     </keybind>
     <keybind key="A-space">
@@ -263,7 +263,7 @@
       </action>
     </keybind>
 
-<!-- Keybindings for window tiling -->
+    <!-- Keybindings for window tiling -->
     <keybind key="W-Left">
       <action name="UnmaximizeFull"/>
       <action name="MoveResizeTo">
@@ -311,6 +311,10 @@
         <command>alacritty</command>
       </action>
     </keybind>
+    <keybind key="F12">
+      <action name="Execute">
+        <command>xscreensaver-command -lock</command>
+      </action>
 
     <!--keybindings for LXPanel -->
     <keybind key="W-r">
@@ -657,76 +661,71 @@
     <!-- show the manage desktops section in the client-list-(combined-)menu -->
   </menu>
   <applications>
+    <!-- obxprop | grep "^_OB_APP" -->
+    <!-- desktop 1 -->
+    <application name="main" class="Alacritty">
+      <desktop>1</desktop>
+    </application>
+
+    <!-- desktop 2 -->
+    <application name="Navigator" class="firefox">
+      <desktop>2</desktop>
+      <position force="yes">
+        <maximized>true</maximized>
+      </position>
+    </application>
+
+    <!-- desktop 3 -->
+    <application name="signal" class="Signal">
+      <desktop>3</desktop>
+      <position force="yes">
+        <x>50%</x>
+        <y>0</y>
+      </position>
+    </application>
+    <application name="discord" class="discord">
+      <desktop>3</desktop>
+      <position force="yes">
+        <x>0</x>
+        <y>0</y>
+      </position>
+    </application>
+
+    <!-- desktop 4 -->
+    <application name="misc" class="Alacritty">
+      <desktop>4</desktop>
+      <position force="yes">
+        <x>0</x>
+        <y>0</y>
+      </position>
+    </application>
+    <application name="keepassxc" class="KeePassXC">
+      <desktop>4</desktop>
+      <position force="yes">
+        <x>60%</x>
+        <y>20%</y>
+      </position>
+    </application>
     <!--
-  # this is an example with comments through out. use these to make your
-  # own rules, but without the comments of course.
-
-  <application name="first element of window's WM_CLASS property (see xprop)"
-              class="second element of window's WM_CLASS property (see xprop)"
-               role="the window's WM_WINDOW_ROLE property (see xprop)">
-  # the name or the class can be set, or both. this is used to match
-  # windows when they appear. role can optionally be set as well, to
-  # further restrict your matches.
-
-  # the name, class, and role use simple wildcard matching such as those
-  # used by a shell. you can use * to match any characters and ? to match
-  # any single character.
-
-  # when multiple rules match a window, they will all be applied, in the
-  # order that they appear in this list
-
-
-    # each element can be left out or set to 'default' to specify to not
-    # change that attribute of the window
-
-    <decor>yes</decor>
-    # enable or disable window decorations
-
-    <shade>no</shade>
-    # make the window shaded when it appears, or not
-
-    <position>
-      # the position is only used if both an x and y coordinate are provided
-      # (and not set to 'default')
-      <x>center</x>
-      # a number like 50, or 'center' to center on screen. use a negative number
-      # to start from the right (or bottom for <y>), ie -50 is 50 pixels from the
-      # right edge (or bottom).
-      <y>200</y>
-      <monitor>1</monitor>
-      # specifies the monitor in a xinerama setup.
-      # 1 is the first head, or 'mouse' for wherever the mouse is
-    </position>
-
-    <focus>yes</focus>
-    # if the window should try be given focus when it appears. if this is set
-    # to yes it doesn't guarantee the window will be given focus. some
-    # restrictions may apply, but Openbox will try to
-
-    <desktop>1</desktop>
-    # 1 is the first desktop, 'all' for all desktops
-
-    <layer>normal</layer>
-    # 'above', 'normal', or 'below'
-
-    <iconic>no</iconic>
-    # make the window iconified when it appears, or not
-
-    <skip_pager>no</skip_pager>
-    # asks to not be shown in pagers
-
-    <skip_taskbar>no</skip_taskbar>
-    # asks to not be shown in taskbars. window cycling actions will also
-    # skip past such windows
-
-    <fullscreen>yes</fullscreen>
-    # make the window in fullscreen mode when it appears
-
-    <maximized>true</maximized>
-    # 'Horizontal', 'Vertical' or boolean (yes/no)
-  </application>
-
-  # end of the example
--->
+    <application name="first element of window's WM_CLASS property (see xprop)"
+                 class="second element of window's WM_CLASS property (see xprop)"
+                 role="the window's WM_WINDOW_ROLE property (see xprop)">
+      <decor>yes</decor>
+      <shade>no</shade>
+      <position>
+        <x>center</x>
+        <y>200</y>
+        <monitor>1</monitor>
+      </position>
+      <focus>yes</focus>
+      <desktop>1</desktop> # 1 is the first desktop, 'all' for all desktops
+      <layer>normal</layer> # 'above', 'normal', or 'below'
+      <iconic>no</iconic> # make the window iconified when it appears, or not
+      <skip_pager>no</skip_pager> # asks to not be shown in pagers
+      <skip_taskbar>no</skip_taskbar> # asks to not be shown in taskbars. window cycling actions will also
+      <fullscreen>yes</fullscreen>
+      <maximized>true</maximized> # 'Horizontal', 'Vertical' or boolean (yes/no)
+    </application>
+    -->
   </applications>
 </openbox_config>
