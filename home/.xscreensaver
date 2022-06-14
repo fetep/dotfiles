@@ -1,0 +1,170 @@
+# XScreenSaver Preferences File
+# Written by xscreensaver-settings 6.03-3.fc36 for petef on Tue Jun 14 16:13:17 2022.
+# https://www.jwz.org/xscreensaver/
+
+timeout:	0:07:00
+cycle:		0:10:00
+lock:		True
+lockTimeout:	0:00:00
+passwdTimeout:	0:00:15
+visualID:	default
+installColormap:    True
+verbose:	False
+splash:		False
+splashDuration:	0:00:05
+demoCommand:	xscreensaver-settings
+nice:		10
+fade:		True
+unfade:		False
+fadeSeconds:	0:00:02
+ignoreUninstalledPrograms:True
+font:		
+dpmsEnabled:	True
+dpmsQuickOff:	False
+dpmsStandby:	0:30:00
+dpmsSuspend:	0:45:00
+dpmsOff:	1:10:00
+grabDesktopImages:  False
+grabVideoFrames:    False
+chooseRandomImages: True
+imageDirectory:	/usr/share/backgrounds/images
+
+mode:		one
+selected:	30
+
+textMode:	file
+textLiteral:	
+textFile:	/etc/fedora-release
+textProgram:	fortune -s
+textURL:	http://planet.fedoraproject.org/rss20.xml
+dialogTheme:	greenblack
+
+programs:								      \
+				maze -root				    \n\
+				attraction -root			    \n\
+				blitspin -root				    \n\
+				greynetic -root				    \n\
+				helix -root				    \n\
+				hopalong -root				    \n\
+				imsmap -root				    \n\
+-				noseguy -root				    \n\
+-				pyro -root				    \n\
+				qix -root				    \n\
+-				rocks -root				    \n\
+				rorschach -root				    \n\
+				decayscreen -root			    \n\
+				flame -root				    \n\
+				halo -root				    \n\
+				slidescreen -root			    \n\
+				pedal -root				    \n\
+				bouboule -root				    \n\
+-				braid -root				    \n\
+				coral -root				    \n\
+				deco -root				    \n\
+				drift -root				    \n\
+-				fadeplot -root				    \n\
+				galaxy -root				    \n\
+				goop -root				    \n\
+				grav -root				    \n\
+				ifs -root				    \n\
+				julia -root				    \n\
+-				kaleidescope -root			    \n\
+				moire -root				    \n\
+				mountain -root -count 60 -ncolors 192	    \n\
+				munch -root				    \n\
+				penrose -root				    \n\
+				rdbomb -root				    \n\
+-				sierpinski -root			    \n\
+				slip -root				    \n\
+				starfish -root				    \n\
+				strange -root				    \n\
+				swirl -root				    \n\
+				triangle -root				    \n\
+				xjack -root				    \n\
+				xlyap -root				    \n\
+-				bsod -root				    \n\
+-				crystal -root				    \n\
+				cynosure -root				    \n\
+				discrete -root				    \n\
+				distort -root				    \n\
+				epicycle -root				    \n\
+				flow -root				    \n\
+				interference -root			    \n\
+				kumppa -root				    \n\
+				moire2 -root				    \n\
+				truchet -root				    \n\
+-				vidwhacker -root			    \n\
+				blaster -root				    \n\
+				bumps -root				    \n\
+				ccurve -root				    \n\
+				compass -root				    \n\
+				deluxe -root				    \n\
+-				demon -root				    \n\
+-				loop -root				    \n\
+				penetrate -root				    \n\
+				petri -root				    \n\
+				phosphor -root				    \n\
+				ripples -root				    \n\
+				shadebobs -root				    \n\
+				spotlight -root				    \n\
+				squiral -root				    \n\
+				wander -root				    \n\
+-				webcollage -root			    \n\
+				xflame -root				    \n\
+				xmatrix -root				    \n\
+-				nerverot -root				    \n\
+				xrayswarm -root				    \n\
+				xspirograph -root			    \n\
+				rotzoomer -root				    \n\
+				scooter -root				    \n\
+				speedmine -root				    \n\
+				vermiculate -root			    \n\
+				whirlwindwarp -root			    \n\
+				zoom -root				    \n\
+				anemone -root				    \n\
+				apollonian -root			    \n\
+				euler2d -root				    \n\
+				fluidballs -root			    \n\
+				halftone -root				    \n\
+-				polyominoes -root			    \n\
+-				thornbird -root				    \n\
+				twang -root				    \n\
+				apple2 -root				    \n\
+				barcode -root				    \n\
+				cloudlife -root				    \n\
+				eruption -root				    \n\
+				fontglide -root				    \n\
+				metaballs -root				    \n\
+				piecewise -root				    \n\
+				pong -root				    \n\
+				popsquares -root			    \n\
+				xanalogtv -root				    \n\
+				abstractile -root			    \n\
+				anemotaxis -root			    \n\
+				fireworkx -root				    \n\
+				fuzzyflakes -root			    \n\
+				interaggregate -root			    \n\
+				intermomentary -root			    \n\
+				memscroller -root			    \n\
+				pacman -root				    \n\
+				substrate -root				    \n\
+				wormhole -root				    \n\
+				boxfit -root				    \n\
+				celtic -root				    \n\
+				fiberlamp -root				    \n\
+				cwaves -root				    \n\
+				m6502 -root				    \n\
+-				lcdscrub -root				    \n\
+				hexadrop -root				    \n\
+				binaryring -root			    \n\
+				tessellimage -root			    \n\
+				filmleader -root			    \n\
+				glitchpeg -root				    \n\
+				vfeedback -root				    \n\
+				binaryhorizon -root			    \n\
+				marbling -root				    \n\
+
+
+pointerHysteresis:  10
+authWarningSlack:   20
+
