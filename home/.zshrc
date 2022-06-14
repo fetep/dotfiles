@@ -141,7 +141,7 @@ function title() {
         print -Pn "\e_${curdir} ${location}\e\\"  # screen location
       fi
       ;;
-    xterm*)
+    alacritty|xterm*)
       print -Pn "\e]0;${cmd} - ${location}${curdir}\a"
       ;;
   esac

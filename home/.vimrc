@@ -57,11 +57,11 @@ map <leader>t :set noet ts=8 sts=8 sw=8 nolist<CR>
 " Set title string and push it to xterm/screen window title
 set titlestring=vim\ %<%F%(\ %)%m%h%w%=%l/%L-%P
 set titlelen=40
-if &term == "screen" || &term == "screen-256color"
+if &term == "screen-256color"
   set t_ts=k
   set t_fs=\
 endif
-if &term == "screen" || &term == "screen-256color" || &term == "xterm"
+if &term == "screen-256color" || &term == "xterm" || &term == "alacritty"
   set title
 endif
 
