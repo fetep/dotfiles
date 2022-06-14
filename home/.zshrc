@@ -7,6 +7,10 @@ petef*|pfritchman|pf*) _me=true ;;
 *) _me=false ;;
 esac
 
+if [[ -n $TMUX ]]; then
+  _tmux_session=$(tmux display-message -p '#S')
+fi
+
 # vi mode, inspired by ksh
 setopt vi
 setopt nonomatch
@@ -124,6 +128,9 @@ function title() {
   local location="${HOST}"
 
   $_me || location="${USERNAME}@${location}"
+  if [[ -n $_tmux_session ]]; then
+    local tmux="[$_tmux_session] "
+  fi
 
   cmd="%$((COLUMNS-30))>...>$cmd%<<"
   unset PROMPT_SUBST
@@ -131,11 +138,11 @@ function title() {
     screen*)
       if [[ -n "$TMUX" ]]; then
         if [[ $1 == "-zsh" || $1 == "zsh" ]]; then
-          print -Pn "\ek \e\\"                # window_name (empty)
+          print -Pn "\ek \e\\"                    # window_name (empty)
         else
           print -Pn "\ek${cmd}\e\\"               # window_name
         fi
-        print -Pn "\e_${location}${curdir}\e\\"   # pane_title
+        print -Pn "\e_${tmux}${location}${curdir}\e\\"   # pane_title
       else
         print -Pn "\ek${cmd}\e\\"                 # screen title
         print -Pn "\e_${curdir} ${location}\e\\"  # screen location
