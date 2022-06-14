@@ -37,7 +37,7 @@
     <primaryMonitor/>
   </placement>
   <theme>
-    <name>Solarized-Dark</name>
+    <name>Syscrash</name>
     <titleLayout>NLIMC</titleLayout>
     <!--
       available characters are NDSLIMC, each can occur at most once.
@@ -53,7 +53,7 @@
     <animateIconify>yes</animateIconify>
     <font place="ActiveWindow">
       <name>sans</name>
-      <size>10</size>
+      <size>12</size>
       <!-- font size in points -->
       <weight>bold</weight>
       <!-- 'bold' or 'normal' -->
@@ -62,7 +62,7 @@
     </font>
     <font place="InactiveWindow">
       <name>sans</name>
-      <size>10</size>
+      <size>12</size>
       <!-- font size in points -->
       <weight>bold</weight>
       <!-- 'bold' or 'normal' -->
@@ -71,7 +71,7 @@
     </font>
     <font place="MenuHeader">
       <name>sans</name>
-      <size>10</size>
+      <size>12</size>
       <!-- font size in points -->
       <weight>normal</weight>
       <!-- 'bold' or 'normal' -->
@@ -89,7 +89,7 @@
     </font>
     <font place="OnScreenDisplay">
       <name>sans</name>
-      <size>10</size>
+      <size>12</size>
       <!-- font size in points -->
       <weight>bold</weight>
       <!-- 'bold' or 'normal' -->
@@ -98,13 +98,13 @@
     </font>
     <font place="ActiveOnScreenDisplay">
       <name>Sans</name>
-      <size>8</size>
+      <size>10</size>
       <weight/>
       <slant/>
     </font>
     <font place="InactiveOnScreenDisplay">
       <name>Sans</name>
-      <size>8</size>
+      <size>10</size>
       <weight/>
       <slant/>
     </font>
