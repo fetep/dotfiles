@@ -11,7 +11,6 @@ log() {
 cd "$(dirname "$0")"
 base=$PWD
 backdir="$base/backup"
-dotdir="$base/home"
 
 mkdir -p -m 0700 "$backdir"
 
@@ -20,7 +19,7 @@ git submodule init
 git submodule update --recursive
 
 link() {
-  local dotfile="$1"
+  local dotfile="$1" dotdir="$2"
   local dotpath="$(dirname "$dotfile")"
 
   if [[ -e "$HOME/$dotfile" && ! -L "$HOME/$dotfile" ]]; then
@@ -43,14 +42,28 @@ link() {
   fi
 }
 
-(cd "$dotdir" && find . -type f \! -path './.vim/bundle/*' -print0) |
-while IFS= read -r -d '' dotfile; do
-  link "${dotfile##./}"
-done
+link_dotdir() {
+  local dotdir="$1"
+  (cd "$dotdir" && find . -type f \! -path './.vim/bundle/*' \! -path '*/.*.sw*' -print0) |
+  while IFS= read -r -d '' dotfile; do
+    link "${dotfile##./}" "$dotdir"
+  done
 
-# symlink vim bundles
-mkdir -p ~/.vim/bundle
-(cd "$dotdir/.vim/bundle" && ls) |
-while read bundle; do
-  link ".vim/bundle/$bundle"
-done
+  # symlink vim bundles
+  if [[ -d $dotdir/.vim/bundle ]]; then
+    mkdir -p ~/.vim/bundle
+    (cd "$dotdir/.vim/bundle" && ls -1) |
+    while read bundle; do
+      link ".vim/bundle/$bundle" "$dotdir"
+    done
+  fi
+}
+
+echo "=> linking dotfiles in $base/home"
+link_dotdir "$base/home"
+
+# separate workstation dotfiles into home-ws
+if hostname | fgrep -q fetep.net; then
+  echo "=> linking workstation dotfiles in $base/home-ws"
+  link_dotdir "$base/home-ws"
+fi
