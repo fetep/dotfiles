@@ -1,3 +1,10 @@
 @lxpanel --profile LXDE
 @pcmanfm --desktop --profile LXDE
+@discord
+@signal-desktop
+@firefox
+@keepassxc
+@run-term misc
+@run-term main
+@run-term main
 @xscreensaver -no-splash
