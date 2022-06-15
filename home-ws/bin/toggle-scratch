@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # toggle the "scratch" xterm on the current desktop.
-# if not running, fire it up and an openbox config places it in the righ tspot
-# if running, gracefully close (has a tmux session, nothing lost)
+# if not running, fire it up and an openbox config places it in the right spot
+# if running, toggle the window "hidden" attribute
 
 running=$(wmctrl -x -l | awk '$3 == "scratch.Alacritty" {print;}')
 if [[ -n "$running" ]]; then
-  wmctrl -x -c scratch.Alacritty
+  wmctrl -x -r scratch.Alacritty -b toggle,hidden
 else
   exec run-term scratch
 fi
