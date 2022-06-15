@@ -288,6 +288,11 @@
         <command>xscreensaver-command -lock</command>
       </action>
     </keybind>
+    <keybind key="C-A-k">
+      <action name="Execute">
+        <command>wmctrl -x -a keepassxc.KeePassXC</command>
+      </action>
+    </keybind>
 
     <!--keybindings for LXPanel -->
     <keybind key="W-r">
