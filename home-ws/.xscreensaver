@@ -1,5 +1,5 @@
 # XScreenSaver Preferences File
-# Written by xscreensaver-settings 6.03-3.fc36 for petef on Tue Jun 14 16:13:17 2022.
+# Written by xscreensaver-settings 6.03-3.fc36 for petef on Tue Jun 14 20:37:36 2022.
 # https://www.jwz.org/xscreensaver/
 
 timeout:	0:07:00
@@ -14,12 +14,12 @@ splash:		False
 splashDuration:	0:00:05
 demoCommand:	xscreensaver-settings
 nice:		10
-fade:		True
+fade:		False
 unfade:		False
 fadeSeconds:	0:00:02
 ignoreUninstalledPrograms:True
 font:		
-dpmsEnabled:	True
+dpmsEnabled:	False
 dpmsQuickOff:	False
 dpmsStandby:	0:30:00
 dpmsSuspend:	0:45:00
@@ -29,8 +29,8 @@ grabVideoFrames:    False
 chooseRandomImages: True
 imageDirectory:	/usr/share/backgrounds/images
 
-mode:		one
-selected:	30
+mode:		blank
+selected:	62
 
 textMode:	file
 textLiteral:	
