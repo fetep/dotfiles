@@ -4,7 +4,7 @@
 @signal-desktop
 @firefox
 @keepassxc
+@run-term main
+@run-term main
 @run-term misc
-@run-term main
-@run-term main
 @xscreensaver -no-splash
