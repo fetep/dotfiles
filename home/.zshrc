@@ -98,7 +98,7 @@ compinit
 
 # custom functions
 function psg() {
-  ps auxww | egrep -- $* | fgrep -v egrep
+  ps auxww | egrep -i -- "$@" | fgrep -v -- "egrep -i --"
 }
 
 function scp() {
