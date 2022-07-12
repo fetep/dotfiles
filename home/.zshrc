@@ -96,6 +96,13 @@ autoload -U add-zsh-hook
 autoload -U compinit
 compinit
 
+# systems with older ncurses don't know about alacritty
+if [[ $TERM == "alacritty" ]]; then
+  if ! infocmp alacritty >/dev/null 2>&1; then
+    export TERM=xterm-256color
+  fi
+fi
+
 # custom functions
 function psg() {
   ps auxww | egrep -i -- "$@" | fgrep -v -- "egrep -i --"
