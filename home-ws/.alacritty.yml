@@ -1,7 +1,7 @@
 window:
   dimensions:
     columns: 100
-    lines: 55
+    lines: 52
   # Blank space added around the window in pixels. This padding is scaled
   # by DPI and the specified value is always added at both opposing sides.
   padding:
@@ -24,7 +24,7 @@ font:
   bold_italic:
     family: Fira Code
     style: Bold
-  size: 14.0
+  size: 11.0
 
   #offset:
   #  x: 0
