@@ -21,10 +21,37 @@ usage() {
   echo "scratch   scratch terminal w/tmux, on all desktops"
 }
 
+hidpi_startup_wait() {
+  while :; do
+    hidpi_pid=$(pgrep -U $USERNAME hidpi-daemon | head -1)
+    [[ -n "$hidpi_pid" ]] && break
+
+    log "waiting for hidpi-daemon to start"
+    sleep 1
+  done
+
+  # make sure it's been running for 3s
+  start=$(stat -c '%Y' /proc/$hidpi_pid/cmdline)
+  while :; do
+    now=$(date +%s)
+    diff=$((now-start))
+    [[ $diff > 3 ]] && break
+
+    log "letting hidpi-daemon run for 3s (diff=$diff)"
+    sleep 1
+  done
+}
+
 if [[ $# -gt 1 ]]; then
   err "too many arguments"
   usage >&2
   exit 1
+fi
+
+# if hidpi-daemon is set to start, wait for it to be running for a few seconds before starting
+# a terminal.
+if [[ -e /etc/xdg/autostart/hidpi-daemon.desktop ]]; then
+  hidpi_startup_wait
 fi
 
 term_type=$1
