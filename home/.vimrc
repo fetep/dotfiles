@@ -1,5 +1,4 @@
 set nocompatible
-let mapleader = ","
 
 " https://github.com/tpope/vim-pathogen
 execute pathogen#infect()
@@ -17,7 +16,7 @@ set ignorecase
 set hlsearch
 set showmode
 set backspace=indent,eol,start
-set autowrite
+set textwidth=100
 
 set ai
 set ruler
@@ -27,13 +26,30 @@ set scrolloff=10  " guaranteed context lines
 " style
 set ts=2 sw=2 et
 set shiftround
-set list
 set listchars=tab:>-
 
 filetype plugin indent on
 
-autocmd BufNewFile,BufRead Makefile setlocal noet nolist ts=8 sts=8 sw=8
-autocmd BufNewFile,BufRead *.py setlocal ts=2 sts=2 sw=2
+function SetIndent(spaces, tabs=0)
+  if a:tabs
+    execute "set noet nolist"
+  else
+    execute "set et list"
+  endif
+  execute "set ts=" . a:spaces
+  execute "set sts=" . a:spaces
+  execute "set sw=" . a:spaces
+endfunction
+
+" default to 2-space indents with no tabs
+call SetIndent(2, 0)
+
+autocmd BufNewFile,BufRead Makefile call SetIndent(2, 1)
+autocmd BufNewFile,BufRead *.go SetIndent(2, 1)
+autocmd BufNewFile,BufRead *.jbuilder setlocal filetype=ruby
+autocmd BufNewFile,BufRead *.py call SetIndent(4, 0) # PEP-8
+
+" highlight trailing whitespace
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
 autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
@@ -41,12 +57,15 @@ autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 
 " mappings
-map <leader>2 :set ts=2 sts=2 sw=2<CR>
-map <leader>4 :set ts=4 sts=4 sw=4<CR>
+let mapleader = ","
+map <leader>2 :call SetIndent(2, 0)<CR>
+map <leader>4 :call SetIndent(4, 0)<CR>
 map <leader>m :noh<CR>
 map <leader>n :noh<CR>
 map <leader>p :set invpaste paste?<CR>
-map <leader>t :set noet ts=8 sts=8 sw=8 nolist<CR>
+map <leader>t :call SetIndent(8, 1)<CR>
+map <leader>t2 :call SetIndent(2, 1)<CR>
+map <leader>t8 :call SetIndent(8, 1)<CR>
 
 " reformat current paragraph
 :nmap Q gqap
@@ -74,12 +93,8 @@ let g:go_highlight_functions = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_types = 1
 let g:go_metalinter_autosave = 0
-autocmd BufNewFile,BufRead *.go setlocal noet nolist ts=4 sts=4 sw=4 textwidth=100
 map <C-n> :cnext<CR>
 map <C-m> :cprevious<CR>
-nnoremap <leader>a :cclose<CR>
-autocmd FileType go nmap <leader>b  <Plug>(go-build)
-autocmd FileType go nmap <leader>r  <Plug>(go-run)
 let g:go_fmt_command = "$GOROOT/bin/goimports"
 "let g:go_gopls_enabled = 0
 
