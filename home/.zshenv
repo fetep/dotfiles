@@ -2,24 +2,23 @@
 
 typeset -Ug path
 
-if [[ -d ~/.local/bin ]]; then
-  path=(~/.local/bin "$path[@]")
-fi
-
 if [[ -d ~/bin ]]; then
   path=(~/bin "$path[@]")
 fi
 
-if [[ -d /var/lib/snapd/snap/bin ]]; then
-  path+=(/var/lib/snapd/snap/bin)
+if [[ -d ~/.local/bin ]]; then
+  path=(~/.local/bin "$path[@]")
 fi
 
-path+=(/usr/local/bin)
-path+=(/usr/bin)
-path+=(/bin)
-path+=(/usr/local/sbin)
-path+=(/usr/sbin)
-path+=(/sbin)
+for dir in /usr/local/{s,}bin /usr/{s,}bin /{s,}bin; do
+  path+=($dir)
+done
+
+for dir in /var/lib/snapd/snap/bin /usr/local/node/bin; do
+  if [[ -d "$dir" ]]; then
+    path+=($dir)
+  fi
+done
 
 # force ssh
 export CVS_RSH=ssh
