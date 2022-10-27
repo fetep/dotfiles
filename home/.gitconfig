@@ -10,3 +10,6 @@
 [user]
   name = Pete Fritchman
   email = petef@databits.net
+
+[url "ssh://git@github.com/"]
+  insteadOf = https://github.com/
