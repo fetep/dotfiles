@@ -3,9 +3,9 @@
 # if not running, fire it up and an openbox config places it in the right spot
 # if running, toggle the window "hidden" attribute
 
-running=$(wmctrl -x -l | awk '$3 == "scratch.Alacritty" {print;}')
-if [[ -n "$running" ]]; then
-  wmctrl -x -r scratch.Alacritty -b toggle,hidden
+window_id=$(xdotool search --all --classname scratch)
+if [[ -n "$window_id" ]]; then
+  xdotool windowclose $window_id
 else
   exec run-term scratch
 fi
