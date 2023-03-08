@@ -35,7 +35,7 @@ hidpi_startup_wait() {
   while :; do
     now=$(date +%s)
     diff=$((now-start))
-    [[ $diff > 3 ]] && break
+    [[ $diff -gt 3 ]] && break
 
     log "letting hidpi-daemon run for 3s (diff=$diff)"
     sleep 1
