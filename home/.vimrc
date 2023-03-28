@@ -47,7 +47,7 @@ call SetIndent(2, 0)
 autocmd BufNewFile,BufRead Makefile call SetIndent(2, 1)
 autocmd BufNewFile,BufRead *.go SetIndent(2, 1)
 autocmd BufNewFile,BufRead *.jbuilder setlocal filetype=ruby
-autocmd BufNewFile,BufRead *.py call SetIndent(4, 0) # PEP-8
+autocmd BufNewFile,BufRead *.py call SetIndent(4, 0) " PEP-8
 
 " highlight trailing whitespace
 highlight ExtraWhitespace ctermbg=red guibg=red
