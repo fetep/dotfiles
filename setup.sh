@@ -49,11 +49,15 @@ link_dotdir() {
     link "${dotfile##./}" "$dotdir"
   done
 
-  # symlink vim bundles
+  # symlink vim bundles for pathogen. these should all be git submodules. to add a new one:
+  #  cd home/.vim
+  #  git submodule add https://github.com/foo/bar bundle/bar
+  #  git submodule update --init --recursive
   if [[ -d $dotdir/.vim/bundle ]]; then
     mkdir -p ~/.vim/bundle
     (cd "$dotdir/.vim/bundle" && ls -1) |
     while read bundle; do
+      cd "$dotdir/.vim/bundle/$bundle" && git submodule update --init --recursive
       link ".vim/bundle/$bundle" "$dotdir"
     done
   fi
@@ -63,7 +67,7 @@ echo "=> linking dotfiles in $base/home"
 link_dotdir "$base/home"
 
 # separate workstation dotfiles into home-ws
-if hostname | fgrep -q fetep.net; then
+if hostname | grep -F -q fetep.net; then
   echo "=> linking workstation dotfiles in $base/home-ws"
   link_dotdir "$base/home-ws"
 fi
