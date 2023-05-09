@@ -1,7 +1,13 @@
 set nocompatible
 
-" https://github.com/tpope/vim-pathogen
+" load pathogen (https://github.com/tpope/vim-pathogen)
+filetype off
+
 execute pathogen#infect()
+execute pathogen#helptags()
+
+filetype plugin indent on
+syntax on
 
 " solarized
 syntax enable
@@ -27,8 +33,6 @@ set scrolloff=10  " guaranteed context lines
 set ts=2 sw=2 et
 set shiftround
 set listchars=tab:>-
-
-filetype plugin indent on
 
 function SetIndent(spaces, tabs=0)
   if a:tabs
