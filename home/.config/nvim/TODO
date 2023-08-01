@@ -1,0 +1,6 @@
+- EOL whitespace on comments not highlighted
+- move diagnostic errors to middle of lualine
+- make 'tabs' in lualine red when bad
+- show tab listchars with red bg
+- in nix, why do nested comments start at column 0?
+- gcc comment thing needs to not prefix a space

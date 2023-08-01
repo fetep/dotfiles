@@ -81,7 +81,11 @@ alias popd='popd; dirs -v'
 alias pushd='pushd; dirs -v'
 alias t='mkdir -m 0700 -p /tmp/$USER.$$ && cd /tmp/$USER.$$'
 alias tmux='tmux -2'
-[[ -x =vim ]] && alias vi=vim
+if [[ -x =nvim ]]; then
+  alias vi=nvim
+elif [[ -x =vim ]]; then
+  alias vi=vim
+fi
 
 unalias rm mv cp 2>/dev/null  # no -i madness
 
