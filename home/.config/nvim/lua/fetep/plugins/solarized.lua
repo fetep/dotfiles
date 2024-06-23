@@ -6,6 +6,14 @@ return {
         lazy = false,
         priority = 1000,
         config = function()
+            require('solarized').setup{
+                styles = {
+                    comments = { italic = false },
+                    functions = { italic = false },
+                    variables = { italic = false },
+                },
+            }
+
             vim.o.background = 'dark'
             vim.cmd.colorscheme 'solarized'
         end,
