@@ -12,7 +12,6 @@ return {
                 'bashls',
                 'gopls',
                 'lua_ls',
-                'puppet',
                 'pylsp',
                 'rust_analyzer',
                 'terraformls',

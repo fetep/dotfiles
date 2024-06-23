@@ -6,7 +6,7 @@ return {
         cmd = 'Mason',
         keys = {
             {
-                '<leader>m',
+                '<leader>M',
                 '<cmd>Mason<cr>',
                 desc = 'Open Mason (package manager)',
             },

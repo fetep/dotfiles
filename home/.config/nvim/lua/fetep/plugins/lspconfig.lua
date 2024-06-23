@@ -14,7 +14,6 @@ return {
             'bash',
             'go',
             'lua',
-            'puppet',
             'python',
             'rust',
             'terraform',
@@ -33,9 +32,6 @@ return {
                 capabilities = capabilities,
             }
             lspconfig.lua_ls.setup{
-                capabilities = capabilities,
-            }
-            lspconfig.puppet.setup{
                 capabilities = capabilities,
             }
             lspconfig.pylsp.setup{
