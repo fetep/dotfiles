@@ -26,8 +26,6 @@ return {
                 vim.bo.expandtab = true
             end
 
-            vim.opt.cindent = true
-
             vim.api.nvim_create_augroup('GuessIndent', {
                 clear = true,
             })
