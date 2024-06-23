@@ -69,6 +69,17 @@ u() {
   $cmd
 }
 
+# cd to git root
+gr() {
+  if [[ -z "$_git_ref" ]]; then
+    echo "gr: not in a git repo" >&2
+    return 1
+  fi
+
+  local repo_path=$(git rev-parse --show-toplevel)
+  cd "$repo_path"
+}
+
 # some custom git sub-commands; this way we don't have to carry around
 # ~/bin/git-* scripts.
 git() {
