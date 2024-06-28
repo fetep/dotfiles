@@ -81,13 +81,19 @@ alias popd='popd; dirs -v'
 alias pushd='pushd; dirs -v'
 alias t='mkdir -m 0700 -p /tmp/$USER.$$ && cd /tmp/$USER.$$'
 alias tmux='tmux -2'
-if [[ -x =nvim ]]; then
-  alias vi=nvim
-elif [[ -x =vim ]]; then
-  alias vi=vim
-fi
-
 unalias rm mv cp 2>/dev/null  # no -i madness
+
+# configure editor
+if (( $+commands[nvim] )); then
+  alias vi=nvim
+  export EDITOR=nvim
+elif (( $+commands[vim] )); then
+  alias vi=vim
+  export EDITOR=vim
+else
+  export EDITOR=vi
+fi
+export VISUAL="$EDITOR"
 
 # completion madness
 compctl -g '*(-/D)' cd

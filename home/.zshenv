@@ -35,15 +35,6 @@ READNULLCMD=$PAGER
 export SYSTEMD_PAGER=$PAGER
 export SYSTEMD_LESS=$LESS
 
-# vi
-if [[ -x =vim ]]; then
-  export EDITOR="vim"
-else
-  export EDITOR="vi"
-fi
-
-export VISUAL="$EDITOR"
-
 # term fix-ups
 if [[ "$TERM" = "screen-bce" ]]; then
   export TERM="screen"
