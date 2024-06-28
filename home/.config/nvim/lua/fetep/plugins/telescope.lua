@@ -3,6 +3,7 @@
 return {
     {
         'https://github.com/nvim-telescope/telescope.nvim',
+        branch = '0.1.x',
         dependencies = { 'nvim-lua/plenary.nvim' },
         keys = {
             {
@@ -22,7 +23,7 @@ return {
             {
                 '<leader>fg',
                 function()
-                    require('telescope.builtin').find_git_files()
+                    require('telescope.builtin').git_files()
                 end,
                 desc = 'find git files',
             },
