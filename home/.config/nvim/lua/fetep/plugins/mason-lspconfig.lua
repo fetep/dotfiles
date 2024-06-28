@@ -10,6 +10,7 @@ return {
             -- configs in lspconfig.lua
             ensure_installed = {
                 'bashls',
+                'clangd',
                 'gopls',
                 'lua_ls',
                 'pylsp',
