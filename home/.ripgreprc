@@ -1,0 +1,8 @@
+# include dot files (but not .git)
+--hidden
+--glob=!.git/*
+
+# follow symlinks
+--follow
+
+--smart-case

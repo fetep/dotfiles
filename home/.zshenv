@@ -47,3 +47,4 @@ fi
 
 # misc
 unset GNOME_KEYRING_CONTROL
+export RIPGREP_CONFIG_PATH=~/.ripgreprc
