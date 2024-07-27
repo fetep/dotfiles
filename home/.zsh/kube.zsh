@@ -118,10 +118,12 @@ function update-kube-vars() {
 
 # load completion for k8s tools
 for tool in flux helm kubectl kustomize; do
-  if [[ -x =$tool ]]; then
+  if (( $+commands[$tool] )); then
     source <("$tool" completion zsh)
   fi
 done
 
 # k alias
-compdef k=kubectl
+if (( $+commands[kubectl] )); then
+  compdef k=kubectl
+fi
