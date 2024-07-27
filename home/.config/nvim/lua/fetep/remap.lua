@@ -21,14 +21,14 @@ end)
 
 -- toggle diagnostics, default to off
 vim.g.diagnostics_enabled = false
-vim.diagnostic.hide()
+vim.diagnostic.enable(false)
 vim.keymap.set('n', '<leader>d', function()
     if vim.g.diagnostics_enabled then
         vim.g.diagnostics_enabled = false
-        vim.diagnostic.hide()
+        vim.diagnostic.enable(false)
     else
         vim.g.diagnostics_enabled = true
-        vim.diagnostic.show()
+        vim.diagnostic.enable()
     end
     print(string.format('diagnostics_enabled=%s', vim.g.diagnostics_enabled))
 end)
