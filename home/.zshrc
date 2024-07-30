@@ -81,6 +81,7 @@ alias popd='popd; dirs -v'
 alias pushd='pushd; dirs -v'
 alias t='mkdir -m 0700 -p /tmp/$USER.$$ && cd /tmp/$USER.$$'
 alias tmux='tmux -2'
+alias xc='xclip -sel clip'
 unalias rm mv cp 2>/dev/null  # no -i madness
 
 # configure editor
@@ -152,7 +153,7 @@ function title() {
   cmd="%$((COLUMNS-30))>...>$cmd%<<"
   unset PROMPT_SUBST
   case $TERM in
-    screen*)
+    screen*|tmux*)
       if [[ -n "$TMUX" ]]; then
         if [[ $1 == "-zsh" || $1 == "zsh" ]]; then
           print -Pn "\ek \e\\"                    # window_name (empty)
