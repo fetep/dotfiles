@@ -3,7 +3,7 @@ umask 022
 HOST="${$(hostname)%%.*}"
 
 case $USER in
-petef*|pfritchman|pf*) _me=true ;;
+petef|pfritchman) _me=true ;;
 *) _me=false ;;
 esac
 
@@ -145,9 +145,10 @@ function title() {
   local curdir="(%30<...<%~)"
   local location="${HOST}"
 
+  local tmux
   $_me || location="${USERNAME}@${location}"
   if [[ -n $_tmux_session ]]; then
-    local tmux="[$_tmux_session] "
+    tmux="[$_tmux_session] "
   fi
 
   cmd="%$((COLUMNS-30))>...>$cmd%<<"
@@ -166,7 +167,7 @@ function title() {
         print -Pn "\e_${curdir} ${location}\e\\"  # screen location
       fi
       ;;
-    alacritty|xterm*)
+    xterm*)
       print -Pn "\e]0;${cmd} - ${location}${curdir}\a"
       ;;
   esac
