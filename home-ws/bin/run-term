@@ -56,17 +56,14 @@ fi
 
 term_type=$1
 case "$term_type" in
-  main)
-    exec alacritty -o 'window.class.instance=main'
+  main|'')
+    exec kitty
     ;;
   misc)
-    exec alacritty -o 'window.class.instance=misc' -e tmux new-session -As misc
+    exec kitty --class misc tmux new-session -As misc
     ;;
   scratch)
-    exec alacritty -o 'window.class.instance=scratch' -e tmux new-session -As scratch
-    ;;
-  '')
-    exec alacritty
+    exec kitty --class scratch tmux new-session -As scratch
     ;;
   *)
     err "$term_type: unknown term type"
