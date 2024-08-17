@@ -48,3 +48,5 @@ fi
 # misc
 unset GNOME_KEYRING_CONTROL
 export RIPGREP_CONFIG_PATH=~/.ripgreprc
+
+[[ -e "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
