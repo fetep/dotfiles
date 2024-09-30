@@ -1,3 +1,7 @@
+if [[ -d ~/.krew ]]; then
+  path+=(~/.krew/bin)
+fi
+
 # k: kubectl shortcut. no arguments toggles prompt info
 function k() {
   # if run with no arguments, toggle prompt on/off
