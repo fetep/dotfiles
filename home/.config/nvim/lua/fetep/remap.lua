@@ -1,4 +1,5 @@
 vim.g.mapleader = ','
+vim.g.maplocalleader = ','
 
 -- control line numbers
 vim.keymap.set('n', '<leader>1', function()
