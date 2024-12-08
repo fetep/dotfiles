@@ -15,6 +15,7 @@ return {
 
             local indent = {
                 _default = 4,
+                terraform = 2,
                 toml = 2,
                 yaml = 2,
             }
