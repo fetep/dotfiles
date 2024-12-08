@@ -2,6 +2,10 @@
 --hidden
 --glob=!.git/*
 
+# excludes
+--glob=!node_modules/*
+--glob=!vendor/*
+
 # follow symlinks
 --follow
 
