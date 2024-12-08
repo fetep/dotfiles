@@ -8,6 +8,9 @@
   default = simple
   autoSetupRemote = true
 
+[alias]
+  logp = log --pretty=fuller
+
 [user]
   name = Pete Fritchman
   email = petef@databits.net
@@ -17,6 +20,3 @@
 
 [rebase]
   autoStash = true
-
-[alias]
-  logp = log --pretty=fuller
