@@ -10,15 +10,11 @@ if [[ -d ~/.local/bin ]]; then
   path=(~/.local/bin "$path[@]")
 fi
 
-for dir in /usr/local/{s,}bin /usr/{s,}bin /{s,}bin; do
-  path+=($dir)
+for dir in /usr/local/{s,}bin /usr/{s,}bin /{s,}bin /var/lib/snapd/snap/bin /usr/local/node/bin; do
+  [[ -d "$dir" ]] && path+=("$dir")
 done
 
-for dir in /var/lib/snapd/snap/bin /usr/local/node/bin; do
-  if [[ -d "$dir" ]]; then
-    path+=($dir)
-  fi
-done
+unset dir
 
 # force ssh
 export CVS_RSH=ssh
@@ -31,9 +27,9 @@ if [[ -x =less ]]; then
 else
   export PAGER=more
 fi
-READNULLCMD=$PAGER
-export SYSTEMD_PAGER=$PAGER
-export SYSTEMD_LESS=$LESS
+READNULLCMD="$PAGER"
+export SYSTEMD_PAGER="$PAGER"
+export SYSTEMD_LESS="$LESS"
 
 # term fix-ups
 if [[ "$TERM" = "screen-bce" ]]; then
