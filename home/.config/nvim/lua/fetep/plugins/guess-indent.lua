@@ -11,6 +11,7 @@ return {
             local use_tabs = {
                 go = true,
                 make = true,
+                rego = true,
             }
 
             local indent = {
