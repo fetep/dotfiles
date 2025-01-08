@@ -44,5 +44,6 @@ fi
 # misc
 unset GNOME_KEYRING_CONTROL
 export RIPGREP_CONFIG_PATH=~/.ripgreprc
+export LC_TIME="en_GB.UTF-8"
 
 [[ -e "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
