@@ -9,8 +9,14 @@
   autoSetupRemote = true
 
 [user]
-	name = Pete Fritchman
-	email = petef@databits.net
+  name = Pete Fritchman
+  email = petef@databits.net
 
 [url "ssh://git@github.com/"]
   insteadOf = https://github.com/
+
+[rebase]
+  autoStash = true
+
+[alias]
+  logp = log --pretty=fuller
