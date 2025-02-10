@@ -1,0 +1,92 @@
+
+[bell]
+animation = "Ease"
+color = "#dc322f"
+duration = 25
+
+[colors.bright]
+black = "0x002b36"
+blue = "0x839496"
+cyan = "0x93a1a1"
+green = "0x586e75"
+magenta = "0x6c71c4"
+red = "0xcb4b16"
+white = "0xfdf6e3"
+yellow = "0x657b83"
+
+[colors.normal]
+black = "0x073642"
+blue = "0x268bd2"
+cyan = "0x2aa198"
+green = "0x859900"
+magenta = "0xd33682"
+red = "0xdc322f"
+white = "0xeee8d5"
+yellow = "0xb58900"
+
+[colors.primary]
+background = "0x002b36"
+foreground = "0x839496"
+
+[cursor]
+unfocused_hollow = true
+
+[cursor.style]
+blinking = "Never"
+shape = "Block"
+
+[cursor.vi_mode_style]
+shape = "Beam"
+
+[font]
+size = 11.0
+
+[font.bold]
+family = "Fira Code"
+style = "Bold"
+
+[font.bold_italic]
+family = "Fira Code"
+style = "Bold"
+
+[font.italic]
+family = "Fira Code"
+style = "SemiBold"
+
+[font.normal]
+family = "Fira Code"
+style = "Medium"
+
+[[hints.enabled]]
+command = "xdg-open"
+post_processing = true
+regex = "(ipfs:|ipns:|magnet:|mailto:|gemini:|gopher:|https:|http:|news:|file:|git:|ssh:|ftp:)[^\u0000-\u001F\u007F-<>\"\\s{-}\\^⟨⟩`]+"
+
+[hints.enabled.binding]
+key = "U"
+mods = "Control|Shift"
+
+[hints.enabled.mouse]
+enabled = true
+mods = "None"
+
+[selection]
+save_to_clipboard = true
+semantic_escape_chars = ''',│`|:"' ()[]{}<>	'''
+
+[window]
+dynamic_title = true
+opacity = 1.0
+startup_mode = "Windowed"
+
+[window.dimensions]
+columns = 100
+lines = 52
+
+[window.padding]
+x = 4
+y = 4
+
+[general]
+live_config_reload = true
+ipc_socket = true
