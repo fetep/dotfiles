@@ -50,11 +50,24 @@ link_dotdir() {
   done
 }
 
+is_workstation() {
+  local ws="false"
+  if hostname | grep -F -q fetep.net; then
+    ws="true"
+  fi
+
+  if [[ -e ~/.ws ]]; then
+    ws="true"
+  fi
+
+  echo "$ws"
+}
+
 echo "=> linking dotfiles in $base/home"
 link_dotdir "$base/home"
 
 # separate workstation dotfiles into home-ws
-if hostname | grep -F -q fetep.net; then
+if [[ $(is_workstation) == "true" ]]; then
   echo "=> linking workstation dotfiles in $base/home-ws"
   link_dotdir "$base/home-ws"
 fi
