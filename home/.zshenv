@@ -42,7 +42,7 @@ if [[ -d "$HOME/.rvm" ]]; then
 fi
 
 # misc
-unset GNOME_KEYRING_CONTROL
+export BUILDKIT_PROGRESS=plain
 export RIPGREP_CONFIG_PATH=~/.ripgreprc
 export LC_TIME="en_GB.UTF-8"
 
