@@ -14,10 +14,10 @@ return {
             'bash',
             'go',
             'lua',
-            'python',
+            'pyright',
             'rust',
             'terraform',
-            'yaml',
+            --'yaml',
         },
         config = function()
 
@@ -25,21 +25,30 @@ return {
             local lspconfig = require('lspconfig')
 
             -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-            lspconfig.bashls.setup{
+            vim.lsp.config('bashls', {
                 capabilities = capabilities,
-            }
-            lspconfig.clangd.setup{
+            })
+
+            vim.lsp.config('clangd', {
                 capabilities = capabilities,
-            }
-            lspconfig.gopls.setup{
+            })
+
+            vim.lsp.config('gopls', {
                 capabilities = capabilities,
-            }
-            lspconfig.lua_ls.setup{
+            })
+
+            vim.lsp.config('lua_ls', {
                 capabilities = capabilities,
-            }
-            lspconfig.pylsp.setup{
+            })
+
+            --vim.lsp.config('pyright', {
+            --    capabilities = capabilities,
+            --})
+
+            vim.lsp.config('pylsp', {
                 capabilities = capabilities,
                 settings = {
+                    configurationSources = {'flake8'},
                     pylsp = {
                         plugins = {
                             autopep8 = {
@@ -47,33 +56,36 @@ return {
                             },
                             flake8 = {
                                 enabled = true,
-                                indentSize = 4,
-                                maxLineLength = 100,
+                                maxLineLength = 120,
+                            },
+                            mccabe = {
+                                enabled = false,
+                            },
+                            pycodestyle = {
+                                enabled = false,
                             },
                             pydocstyle = {
-                                enabled = true,
-                                ignore = "D100",
+                                enabled = false,
                             },
                             pyflakes = {
                                 enabled = false,
                             },
-                            yapf = {
+                            rope_autoimport = {
                                 enabled = false,
                             },
                         },
                     },
                 },
-            }
-            lspconfig.rust_analyzer.setup{
-                capabilities = capabilities,
-            }
-            lspconfig.yamlls.setup{
-                capabilities = capabilities,
-            }
+            })
 
-            lspconfig.terraformls.setup{
+            vim.lsp.config('rust_analyzer', {
                 capabilities = capabilities,
-            }
+            })
+
+            vim.lsp.config('terraformls', {
+                capabilities = capabilities,
+            })
+
             vim.api.nvim_create_autocmd({"BufWritePre"}, {
                 pattern = {"*.tf", "*.tfvars"},
                 callback = function()

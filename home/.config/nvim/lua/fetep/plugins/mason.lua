@@ -1,9 +1,8 @@
--- https://github.com/williamboman/mason.nvim
+-- https://github.com/mason-org/mason.nvim
 -- package manager for LSP servers, DAP servers, linters, and formatters
 return {
     {
-        'williamboman/mason.nvim',
-        cmd = 'Mason',
+        'mason-org/mason.nvim',
         keys = {
             {
                 '<leader>M',
@@ -11,6 +10,5 @@ return {
                 desc = 'Open Mason (package manager)',
             },
         },
-        config = true,
     },
 }

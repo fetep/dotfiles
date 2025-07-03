@@ -1,22 +1,23 @@
--- https://github.com/williamboman/mason.nvim
+-- https://github.com/mason-org/mason.nvim
 -- LSP config helper, integrating lspconfig + mason
 return {
     {
-        'williamboman/mason-lspconfig.nvim',
+        'mason-org/mason-lspconfig.nvim',
         dependencies = {
-            'williamboman/mason.nvim',
+            { 'mason-org/mason.nvim', opts = {} },
+            'neovim/nvim-lspconfig',
         },
         opts = {
             -- configs in lspconfig.lua
             ensure_installed = {
-                'bashls',
+                --'bashls',
                 'clangd',
                 'gopls',
                 'lua_ls',
-                'pylsp',
+                'pyright',
                 'rust_analyzer',
                 'terraformls',
-                'yamlls',
+                --'yamlls',
             }
         },
     },
