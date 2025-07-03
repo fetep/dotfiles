@@ -27,7 +27,7 @@ return {
 
             cmp.setup {
                 mapping = cmp.mapping.preset.insert({
-                    ['<C-space>'] = cmp.mapping.complete(),
+                    ['<Tab>'] = cmp.mapping.complete(),
                     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
                     ['<C-f>'] = cmp.mapping.scroll_docs(4),
                     ['<C-k>'] = cmp.mapping.select_prev_item(cmp_select),
