@@ -5,9 +5,7 @@ autoload -U colors
 colors
 
 prompt_git_status() {
-  if [[ -z $_git_ref ]]; then
-    return
-  fi
+  [[ -z $_git_ref ]] && return
 
   local dirty=0
   local summary
@@ -60,10 +58,15 @@ prompt_git_status() {
   _pre_prompt=1
 }
 
+prompt_python_venv() {
+  [[ -z $_python_venv ]] && return
+
+  echo -n -e "{ venv: ${_python_venv##*/} } "
+  _pre_prompt=1
+}
+
 prompt_rack_env() {
-  if [[ -z $_rack_dir ]]; then
-    return
-  fi
+  [[ -z $_rack_dir ]] && return
 
   local color=0
 
@@ -93,11 +96,6 @@ prompt_context() {
     h="${h%%-ds-*}-ds/${DEVSHELL}"
   fi
   echo -n "${u}${h}(%35<...<%~) "
-}
-
-prompt_git() {
-  local color
-
 }
 
 prompt_git_branch() {
@@ -136,6 +134,7 @@ build_prompt() {
 
   # first optional line
   prompt_git_status
+  prompt_python_venv
   prompt_rack_env
   prompt_kube_context
 
