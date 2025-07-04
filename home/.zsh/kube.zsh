@@ -121,7 +121,7 @@ function update-kube-vars() {
 }
 
 # load completion for k8s tools
-for tool in flux helm kubectl kustomize; do
+for tool in argocd helm kubectl kustomize; do
   if (( $+commands[$tool] )); then
     source <("$tool" completion zsh)
   fi
