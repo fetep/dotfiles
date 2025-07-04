@@ -16,6 +16,7 @@ return {
 
             local indent = {
                 _default = 4,
+                puppet = 2,
                 terraform = 2,
                 toml = 2,
                 yaml = 2,
