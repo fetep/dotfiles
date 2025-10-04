@@ -2,13 +2,9 @@
 
 typeset -Ug path
 
-if [[ -d ~/bin ]]; then
-  path=(~/bin "$path[@]")
-fi
-
-if [[ -d ~/.local/bin ]]; then
-  path=(~/.local/bin "$path[@]")
-fi
+for dir in ~/.local/bin ~/bin; do
+  [[ -d "$dir" ]] && path=("$dir" "$path[@]")
+done
 
 for dir in /usr/local/{s,}bin /usr/{s,}bin /{s,}bin /var/lib/snapd/snap/bin /usr/local/node/bin; do
   [[ -d "$dir" ]] && path+=("$dir")
