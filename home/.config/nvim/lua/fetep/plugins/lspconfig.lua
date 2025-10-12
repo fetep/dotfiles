@@ -6,31 +6,22 @@ return {
         'neovim/nvim-lspconfig',
         dependencies = {
             'hrsh7th/nvim-cmp',
-            'williamboman/mason.nvim',
-            'williamboman/mason-lspconfig.nvim',
+            'mason-org/mason.nvim',
         },
-        ft = {
-            -- install LSPs in mason-lspconfig.lua & configure below
-            'bash',
-            'go',
-            'lua',
-            'pyright',
-            'rust',
-            'terraform',
-            --'yaml',
-        },
+        -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
         config = function()
-
+            -- no need to call vim.lsp.enable() here, mason-lspconfig takes care of that
             local capabilities = require('cmp_nvim_lsp').default_capabilities();
-            local lspconfig = require('lspconfig')
 
-            -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
             vim.lsp.config('bashls', {
-                capabilities = capabilities,
+               capabilities = capabilities,
             })
 
-            vim.lsp.config('clangd', {
+            vim.lsp.config('basedpyright', {
                 capabilities = capabilities,
+                settings = {
+                    venvPath = '.venv'
+                },
             })
 
             vim.lsp.config('gopls', {
@@ -41,43 +32,6 @@ return {
                 capabilities = capabilities,
             })
 
-            --vim.lsp.config('pyright', {
-            --    capabilities = capabilities,
-            --})
-
-            vim.lsp.config('pylsp', {
-                capabilities = capabilities,
-                settings = {
-                    configurationSources = {'flake8'},
-                    pylsp = {
-                        plugins = {
-                            autopep8 = {
-                                enabled = false,
-                            },
-                            flake8 = {
-                                enabled = true,
-                                maxLineLength = 120,
-                            },
-                            mccabe = {
-                                enabled = false,
-                            },
-                            pycodestyle = {
-                                enabled = false,
-                            },
-                            pydocstyle = {
-                                enabled = false,
-                            },
-                            pyflakes = {
-                                enabled = false,
-                            },
-                            rope_autoimport = {
-                                enabled = false,
-                            },
-                        },
-                    },
-                },
-            })
-
             vim.lsp.config('rust_analyzer', {
                 capabilities = capabilities,
             })
@@ -86,12 +40,16 @@ return {
                 capabilities = capabilities,
             })
 
-            vim.api.nvim_create_autocmd({"BufWritePre"}, {
-                pattern = {"*.tf", "*.tfvars"},
-                callback = function()
-                    vim.lsp.buf.format()
-                end,
+            vim.lsp.config('yamlls', {
+                capabilities = capabilities,
             })
+
+            --vim.api.nvim_create_autocmd({"BufWritePre"}, {
+                --pattern = {"*.tf", "*.tfvars"},
+                --callback = function()
+                    --vim.lsp.buf.format()
+                --end,
+            --})
         end,
     },
 }

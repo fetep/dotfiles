@@ -10,5 +10,6 @@ return {
                 desc = 'Open Mason (package manager)',
             },
         },
+        opts = {},
     },
 }
