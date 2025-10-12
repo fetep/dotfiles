@@ -2,7 +2,7 @@
 -- fuzzy finder UI for selecting from lists and helpful builtins
 return {
     {
-        'https://github.com/nvim-telescope/telescope.nvim',
+        'nvim-telescope/telescope.nvim',
         branch = '0.1.x',
         dependencies = { 'nvim-lua/plenary.nvim' },
         keys = {
