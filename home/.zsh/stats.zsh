@@ -2,9 +2,9 @@ function stats() {
   gawk '
     {
       total += $1;
-      if ($1 < min) min = $1;
-      if ($1 > max) max = $1;
-      input[FNR] = $1
+      if (min == "" || $1 < min) min = $1;
+      if (max == "" || $1 > max) max = $1;
+      input[NR] = $1;
     }
     END {
       mean = total / NR;
@@ -36,6 +36,9 @@ function stats() {
         n1 = (NR + 1) / 2;
         median = input[n1];
       }
+      p50 = input[int(NR*0.50 - 0.5)]
+      p90 = input[int(NR*0.90 - 0.5)]
+      p99 = input[int(NR*0.99 - 0.5)]
 
       printf "min: %g\n", min;
       printf "max: %g\n", max;
@@ -49,6 +52,9 @@ function stats() {
         printf " (%d high, %d low)", high_outliers, low_outliers;
       }
       printf "\n";
+      printf "p50: %g\n", p50;
+      printf "p90: %g\n", p90;
+      printf "p99: %g\n", p99;
     }
   '
 }
