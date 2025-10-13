@@ -32,6 +32,13 @@ p() {
 
   if [[ $1 = "-n" ]]; then
     cmd="git push-n origin $_git_ref"
+  elif [[ $1 = "-f" ]]; then
+    # don't ever force push a branch other than $USERNAME/
+    if [[ ! $_git_ref =~ ^${USER}/ ]]; then
+      echo "p: won't force push a non-personal branch ($_git_ref)" >&2
+      return 2
+    fi
+    cmd="git push -f origin $_git_ref"
   else
     cmd="git push origin $_git_ref"
   fi
