@@ -15,6 +15,7 @@ return {
                 'basedpyright',
                 'gopls',
                 'lua_ls',
+                'ruff',
                 'rust_analyzer',
                 'terraformls',
                 'yamlls',
