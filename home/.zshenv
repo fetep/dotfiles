@@ -6,7 +6,7 @@ for dir in ~/.local/bin ~/bin; do
   [[ -d "$dir" ]] && path=("$dir" "$path[@]")
 done
 
-for dir in /usr/local/{s,}bin /usr/{s,}bin /{s,}bin /var/lib/snapd/snap/bin /usr/local/node/bin; do
+for dir in /usr/local/{s,}bin /usr/{s,}bin /{s,}bin /var/lib/snapd/snap/bin /usr/local/node/bin $HOME/.cargo/bin; do
   [[ -d "$dir" ]] && path+=("$dir")
 done
 
