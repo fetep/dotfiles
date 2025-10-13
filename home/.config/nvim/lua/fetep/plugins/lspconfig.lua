@@ -22,10 +22,18 @@ return {
             -- basedpyright: the rest
             vim.lsp.config('basedpyright', {
                 settings = {
-                    analysis = {
-                        ignore = { '*' },
-                    },
-                    venvPath = '.venv',
+                    basedpyright = {
+                        analysis = {
+                            --ignore = { '*' },
+                            inlayHints = {
+                                callArgumentNames = false,
+                                functionReturnTypes = false,
+                                genericTypes = false,
+                                variableTypes = false,
+                            },
+                        },
+                        venvPath = '.venv',
+                    }
                 },
             })
 
