@@ -3,35 +3,37 @@ vim.g.maplocalleader = ','
 
 -- control line numbers
 vim.keymap.set('n', '<leader>1', function()
-    vim.opt.number = not(vim.opt.number:get())
+    vim.opt.number = not (vim.opt.number:get())
 end)
 vim.keymap.set('n', '<leader>2', function()
-    vim.opt.relativenumber = not(vim.opt.relativenumber:get())
+    vim.opt.relativenumber = not (vim.opt.relativenumber:get())
 end)
-
--- file navigation
-vim.keymap.set('n', '<leader>ls', vim.cmd.Ex)
 
 -- remove highlights
 vim.keymap.set('n', '<leader>m', vim.cmd.noh)
 
 -- toggle paste mode
 vim.keymap.set('n', '<leader>p', function()
-    vim.opt.paste = not(vim.opt.paste:get())
+    vim.opt.paste = not (vim.opt.paste:get())
 end)
 
--- toggle diagnostics, default to off
-vim.g.diagnostics_enabled = false
-vim.diagnostic.enable(false)
+-- enable diagnostics
+vim.diagnostic.enable(true)
+vim.api.nvim_set_option_value('signcolumn', 'yes', {})
+
+function Toggle_diagnostic_virtual_text(enabled)
+    vim.g.diagnostics_virtual_text = enabled
+    vim.diagnostic.config({
+        virtual_text = vim.g.diagnostics_virtual_text,
+    })
+    print(string.format('diagnostics_virtual_text=%s', vim.g.diagnostics_virtual_text))
+end
+
 vim.keymap.set('n', '<leader>d', function()
-    if vim.g.diagnostics_enabled then
-        vim.g.diagnostics_enabled = false
-        vim.diagnostic.enable(false)
-    else
-        vim.g.diagnostics_enabled = true
-        vim.diagnostic.enable()
-    end
-    print(string.format('diagnostics_enabled=%s', vim.g.diagnostics_enabled))
+    Toggle_diagnostic_virtual_text(not vim.g.diagnostics_virtual_text)
+end)
+vim.keymap.set('n', '<leader>i', function()
+    print(vim.inspect(vim.diagnostic.config()))
 end)
 
 -- toggle line 100 column highlight
