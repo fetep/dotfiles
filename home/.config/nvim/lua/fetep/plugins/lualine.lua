@@ -47,6 +47,9 @@ return {
                         path = 1,
                     },
                     'diagnostics',
+                    function()
+                        return require('nvim-lightbulb').get_status_text()
+                    end
                 },
                 lualine_x = {
                     'filetype',
@@ -54,7 +57,7 @@ return {
                         if not vim.bo.expandtab then
                             return 'tabs'
                         end
-                        return string.format('ts=%d',    vim.bo.tabstop)
+                        return string.format('ts=%d', vim.bo.tabstop)
                     end,
                     'fileformat',
                     get_lsp,

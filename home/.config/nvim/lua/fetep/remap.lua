@@ -19,7 +19,10 @@ end)
 
 -- enable diagnostics
 vim.diagnostic.enable(true)
-vim.api.nvim_set_option_value('signcolumn', 'yes', {})
+vim.opt.numberwidth = 3
+vim.opt.signcolumn = 'yes:1'
+vim.opt.statuscolumn = '%l%s'
+--vim.api.nvim_set_option_value('signcolumn', 'yes', {})
 
 function Toggle_diagnostic_virtual_text(enabled)
     vim.g.diagnostics_virtual_text = enabled

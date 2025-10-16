@@ -14,6 +14,8 @@ return {
                     'c',
                     'lua',
                     'go',
+                    'markdown',
+                    'markdown_inline',
                     'python',
                     'query',
                     'vim',

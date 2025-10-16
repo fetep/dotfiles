@@ -9,7 +9,12 @@ return {
                 '<leader>D',
                 '<cmd>Trouble diagnostics toggle<cr>',
                 desc = 'Trouble - toggle diagnostics',
-            }
+            },
+            {
+                '<leader>F',
+                '<cmd>Trouble qflist toggle<cr>',
+                desc = 'Trouble - toggle quickfixes',
+            },
         },
         opts = {},
     },
