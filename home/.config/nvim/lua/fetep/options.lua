@@ -10,6 +10,7 @@ vim.opt.mouse = ''
 vim.opt.number = true
 vim.opt.scrolloff = 10
 vim.opt.smartcase = true
+vim.opt.termguicolors = true
 
 -- undo history between sessions
 vim.opt.backup = false
@@ -17,7 +18,7 @@ vim.opt.undodir = os.getenv('HOME') .. '/.vim/undodir'
 vim.opt.undofile = true
 
 vim.api.nvim_create_augroup('userconfig', {})
-vim.api.nvim_create_autocmd({'BufWinEnter'}, {
+vim.api.nvim_create_autocmd({ 'BufWinEnter' }, {
   group = 'userconfig',
   desc = 'return cursor to where it was last time closing the file',
   pattern = '*',
