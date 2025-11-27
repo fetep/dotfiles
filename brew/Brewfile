@@ -1,0 +1,7 @@
+tap "hashicorp/tap"
+
+brew "cheat"
+brew "hashicorp/tap/terraform"
+brew "fzf"
+brew "neovim"
+brew "ripgrep"
