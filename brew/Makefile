@@ -1,4 +1,6 @@
 .PHONY: all
 
 all:
-	brew bundle check || brew bundle install && brew bundle cleanup --force
+	@brew update --quiet
+	@brew bundle check --quiet || brew bundle install --quiet
+	@brew bundle cleanup --quiet --force

@@ -2,6 +2,7 @@
 # symlink files in $HOME to this checkout
 # if any existing files are there, we save them in ./backup
 
+set -euo pipefail
 progname="${0##*/}"
 
 log() {
@@ -70,4 +71,8 @@ link_dotdir "$base/home"
 if [[ $(is_workstation) == "true" ]]; then
   echo "=> linking workstation dotfiles in $base/home-ws"
   link_dotdir "$base/home-ws"
+fi
+
+if command -v brew >/dev/null; then
+  make -C brew
 fi
