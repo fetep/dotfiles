@@ -85,18 +85,6 @@ alias tmux='tmux -2'
 alias xc='xclip -sel clip'
 unalias rm mv cp 2>/dev/null  # no -i madness
 
-# configure editor
-if (( $+commands[nvim] )); then
-  alias vi=nvim
-  export EDITOR=nvim
-elif (( $+commands[vim] )); then
-  alias vi=vim
-  export EDITOR=vim
-else
-  export EDITOR=vi
-fi
-export VISUAL="$EDITOR"
-
 # completion madness
 compctl -g '*(-/D)' cd
 compctl -g '*.ps' ghostview gv evince
@@ -238,3 +226,15 @@ DEVSHELL_IMAGE=fetep/devshell
 for file in $HOME/.zsh/*.zsh(N); do
   . $file
 done
+
+# configure editor
+if (( $+commands[nvim] )); then
+  alias vi=nvim
+  export EDITOR=nvim
+elif (( $+commands[vim] )); then
+  alias vi=vim
+  export EDITOR=vim
+else
+  export EDITOR=vi
+fi
+export VISUAL="$EDITOR"
