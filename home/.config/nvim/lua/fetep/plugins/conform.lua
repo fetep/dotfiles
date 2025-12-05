@@ -7,6 +7,7 @@ return {
         ft = {
             'go',
             'lua',
+            'puppet',
             'python',
             'terraform',
         },
@@ -19,6 +20,9 @@ return {
                 python = {
                     "ruff_format",
                     "ruff_organize_imports",
+                },
+                puppet = {
+                    "puppet-lint",
                 },
             },
         },
