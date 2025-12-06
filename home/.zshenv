@@ -2,12 +2,20 @@
 
 typeset -Ug path
 
+# prepend path
 for dir in ~/.local/bin ~/bin; do
   [[ -d "$dir" ]] && path=("$dir" "$path[@]")
 done
 
-for dir in /usr/local/{s,}bin /usr/{s,}bin /{s,}bin /var/lib/snapd/snap/bin /usr/local/node/bin $HOME/.cargo/bin; do
-  [[ -d "$dir" ]] && path+=("$dir")
+# append path
+for dir in \
+  /{s,}bin \
+  /usr/{s,}bin \
+  /usr/local/{s,}bin \
+  {/var/lib/snapd/snap,/snap}/bin \
+  $HOME/.cargo/bin \
+  /opt/puppetlabs/{,/puppet}/bin; do
+  [[ -e "$dir" ]] && path+=("$dir")
 done
 
 unset dir
