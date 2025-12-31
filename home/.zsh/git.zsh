@@ -143,3 +143,15 @@ git-pushn() {
 
   return $git_rc
 }
+
+# Git cd: no args takes you to the repo root, any other
+# directory arg is considered relative to the repo root
+gcd() {
+  if [[ -z "$_git_ref" ]]; then
+    echo "gcd: not in a git repo" >&2
+    return 1
+  fi
+
+  cd "$(git rev-parse --show-toplevel)"
+  [[ $# -gt 0 ]] && cd "$@"
+}
