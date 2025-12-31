@@ -27,7 +27,7 @@ export RSYNC_RSH=ssh
 # pager
 if [[ -x =less ]]; then
   export PAGER=less
-  export LESS="--line-numbers --ignore-case --no-init --RAW-CONTROL-CHARS"
+  export LESS="--line-numbers --ignore-case --no-init --RAW-CONTROL-CHARS --quit-if-one-screen"
 else
   export PAGER=more
 fi
