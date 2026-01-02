@@ -5,7 +5,9 @@ export GIT_CEILING_DIRECTORIES=${GIT_CEILING_DIRECTORIES:A}
 # set env vars for other git-related functions to use. this way we run
 # the git commands only once.
 update-git-vars() {
-  if ! command git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  local inside
+  inside="$(command git rev-parse --is-inside-work-tree 2>/dev/null)"
+  if [[ $inside != "true" ]]; then
     unset _git_ref
     return 0
   fi
