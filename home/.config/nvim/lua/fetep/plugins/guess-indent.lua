@@ -20,6 +20,7 @@ return {
                 terraform = 2,
                 toml = 2,
                 yaml = 2,
+                zsh = 2,
             }
 
             local function set_bo_indent(value)
@@ -57,7 +58,7 @@ return {
                     -- tabs are allowed in some filetypes
                     vim.opt.listchars = { tab = '>-' }
                     if not vim.bo.expandtab and use_tabs[vim.bo.filetype] then
-                        vim.opt.listchars = {tab = '  ' }
+                        vim.opt.listchars = { tab = '  ' }
                     end
                 end,
             })

@@ -1,0 +1,16 @@
+repos:
+-   repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+    -   id: shellcheck
+        files: ^home/bin/
+        types: [shell]
+
+-   repo: local
+    hooks:
+    -   id: zsh-syntax-check
+        name: zsh syntax check
+        language: system
+        entry: zsh -n
+        files: ^home/(\.zshrc|\.zshenv|\.zsh/.*\.zsh)$
+        types: [file]
