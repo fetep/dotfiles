@@ -1,12 +1,13 @@
 tap "anomalyco/tap"
-brew "anomalyco/tap/opencode"
-
+tap "garrettkrohn/treekanga"
 tap "hashicorp/tap"
-brew "hashicorp/tap/terraform"
-
 brew "cheat"
 brew "fzf"
 brew "neovim"
 brew "node"
 brew "ripgrep"
+brew "sesh"
 brew "uv"
+brew "anomalyco/tap/opencode"
+brew "garrettkrohn/treekanga/treekanga"
+brew "hashicorp/tap/terraform"
