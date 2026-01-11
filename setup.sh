@@ -43,11 +43,53 @@ link() {
   fi
 }
 
+link_dir() {
+  local dotdir="$1" srcbase="$2"
+  local dotpath="$(dirname "$dotdir")"
+  local link_target="$srcbase/$dotdir"
+
+  if [[ "$dotpath" != "." ]]; then
+    mkdir -p "$HOME/$dotpath"
+  fi
+
+  if [[ -L "$HOME/$dotdir" ]]; then
+    existing="$(readlink -f "$HOME/$dotdir")"
+    if [[ "$existing" != "$link_target" ]]; then
+      log "swapping $HOME/$dotdir from $existing to $link_target"
+      ln -sfn "$link_target" "$HOME/$dotdir"
+    fi
+  elif [[ -d "$HOME/$dotdir" ]]; then
+    mkdir -p "$backdir/$dotpath"
+    log "backing up $HOME/$dotdir to $backdir/$dotdir"
+    mv "$HOME/$dotdir" "$backdir/$dotdir"
+    log "linking $HOME/$dotdir to $link_target"
+    ln -s "$link_target" "$HOME/$dotdir"
+  else
+    log "linking $HOME/$dotdir to $link_target"
+    ln -s "$link_target" "$HOME/$dotdir"
+  fi
+}
+
+dir_symlinks=(.zsh .config/nvim)
+
 link_dotdir() {
   local dotdir="$1"
-  (cd "$dotdir" && find . -type f \! -path '*/.*.sw*' -print0) |
+  local excludes=()
+  for d in "${dir_symlinks[@]}"; do
+    excludes+=(-path "./$d" -prune -o -path "./$d/*" -prune -o)
+  done
+  (cd "$dotdir" && find . "${excludes[@]}" -type f \! -path '*/.*.sw*' -print0) |
   while IFS= read -r -d '' dotfile; do
     link "${dotfile##./}" "$dotdir"
+  done
+}
+
+link_dotdirs() {
+  local srcbase="$1"
+  for d in "${dir_symlinks[@]}"; do
+    if [[ -d "$srcbase/$d" ]]; then
+      link_dir "$d" "$srcbase"
+    fi
   done
 }
 
@@ -65,11 +107,12 @@ is_workstation() {
 }
 
 echo "=> linking dotfiles in $base/home"
+link_dotdirs "$base/home"
 link_dotdir "$base/home"
 
-# separate workstation dotfiles into home-ws
 if [[ $(is_workstation) == "true" ]]; then
   echo "=> linking workstation dotfiles in $base/home-ws"
+  link_dotdirs "$base/home-ws"
   link_dotdir "$base/home-ws"
 fi
 
