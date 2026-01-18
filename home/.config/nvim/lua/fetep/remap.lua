@@ -50,3 +50,12 @@ function _G.toggle_colorcolumn()
 end
 
 vim.keymap.set('n', '<leader>|', ':call v:lua.toggle_colorcolumn()<CR>')
+
+-- lsp bindings
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  callback = function(ev)
+    -- Set 'gd' in normal mode to jump to definition
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { buffer = ev.buf, desc = 'Go to definition' })
+  end,
+})
