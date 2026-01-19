@@ -8,14 +8,54 @@ update-git-vars() {
   local inside
   inside="$(command git rev-parse --is-inside-work-tree 2>/dev/null)"
   if [[ $inside != "true" ]]; then
-    unset _git_ref
+    unset _git_ref _git_root _git_repo
     return 0
   fi
 
   _git_ref=$(git_ref)
+  _git_root="$(git rev-parse --show-toplevel)"
+
+  # pick a short "repo name" for use in our prompt, the basename of our git root
+  # if we're in a worktree layout, treat the bare path as the git root
+  local repo_path
+  repo_path="$(git worktree list | awk '$2 == "(bare)" {print $1;}')"
+  [[ -z "$repo_path" ]] && repo_path="$PWD"
+  _git_repo="${repo_path##*/}"
 }
 
 add-zsh-hook precmd update-git-vars
+
+git_default_branch() {
+  if [[ -z "$_git_ref" ]]; then
+    echo "git_default_branch: not in a git repo" >&2
+    return 1
+  fi
+
+  local branch
+  branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
+  [[ -z "$branch" ]] && branch=$(git remote show origin 2>/dev/null | awk '/HEAD branch/ {print $NF}')
+
+  if [[ -z "$branch" ]]; then
+    echo "git_default_branch: can't determine default branch" >&2
+    return 2
+  fi
+
+  echo "$branch"
+}
+
+git_worktree_root() {
+  if [[ -z "$_git_ref" ]]; then
+    echo "git_worktree_root: not in a git repo" >&2
+    return 1
+  fi
+
+  if ! git worktree list | grep -Fq "(bare)"; then
+    echo "git_worktree_root: not in a worktree layout" >&2
+    return 2
+  fi
+
+  (cd "${_git_root}/.." && pwd)
+}
 
 git_ref() {
   local ref=$(git symbolic-ref HEAD 2>/dev/null ||
@@ -78,17 +118,6 @@ u() {
   $cmd
 }
 
-# cd to git root
-gr() {
-  if [[ -z "$_git_ref" ]]; then
-    echo "gr: not in a git repo" >&2
-    return 1
-  fi
-
-  local repo_path=$(git rev-parse --show-toplevel)
-  cd "$repo_path"
-}
-
 # some custom git sub-commands; this way we don't have to carry around
 # ~/bin/git-* scripts.
 git() {
@@ -99,8 +128,14 @@ git() {
     backup)
       git-backup "$@"
       ;;
+    branch-cleanup)
+      git-branch-cleanup "$@"
+      ;;
     push-n)
       git-pushn "$@"
+      ;;
+    worktree-new)
+      git-worktree-new "$@"
       ;;
     *)
       command git $cmd "$@"
@@ -114,13 +149,28 @@ git-backup() {
     return 1
   fi
 
-  local repo_path=$(git rev-parse --show-toplevel)
-  local repo_checkout=$(basename "$repo_path")
-  local repo_topdir=$(dirname "$repo_path")
+  local repo_checkout="$(basename "$_git_root")"
+  local repo_parent="$(dirname "$_git_root")"
   local tar_name="${repo_checkout}-$(date +%Y%m%d%H%M).tgz"
 
-  echo "=> Creating ${repo_topdir}/${tar_name}" >&2
-  (cd "${repo_topdir}" && tar czf "${tar_name}" "${repo_checkout}")
+  echo "=> Creating ${repo_parent}/${tar_name}" >&2
+  (cd "${repo_parent}" && tar czf "${tar_name}" "${repo_checkout}")
+}
+
+git-branch-cleanup() {
+  if [[ -z "$_git_ref" ]]; then
+    echo "git-branch-cleanup: not in a git repo" >&2
+    return 1
+  fi
+
+  local branch default_branch="$(git_default_branch)"
+  [[ $? -eq 0 ]] || return 1
+
+  git branch --merged "$default_branch" 2>/dev/null | grep -v '^[*+]' | grep -v "^\s*$default_branch$" | \
+    while read branch; do
+      echo "=> removing branch $branch (merged)"
+      git branch -d "$branch" || return 2
+    done
 }
 
 git-pushn() {
@@ -145,6 +195,71 @@ git-pushn() {
 
   return $git_rc
 }
+
+# convert the current git checkout to a worktree layout
+git-worktree-convert() {
+  if [[ -z "$_git_ref" ]]; then
+    echo "git-worktree-convert: not in a git repo" >&2
+    return 1
+  fi
+
+  # make sure we're not in a worktree setup already
+  if git worktree list | grep -Fq "(bare)"; then
+    echo "git-worktree-convert: already in a worktree layout" >&2
+    return 2
+  fi
+
+  local default_branch="$(git_default_branch)" origin="$(git remote get-url origin)"
+  local git_checkout="$(basename "$_git_root")"
+
+  if [[ -e "../${git_checkout}.old" ]]; then
+    echo "git-worktree-convert: can't back up, ${git_checkout}.old already exists" >&2
+    return 3
+  fi
+
+  gcd ..
+  mv "$git_checkout" "${git_checkout}.old" || return 3
+  mkdir "$git_checkout"
+  cd "$git_checkout" || return 3
+
+  git clone --bare "$origin" .git
+  git worktree add "$default_branch"
+  zoxide add "$default_branch"
+  git worktree add review
+  zoxide add review
+}
+
+git-worktree-new() {
+  if [[ -z "$_git_ref" ]]; then
+    echo "git-worktree-new: not in a git repo" >&2
+    return 1
+  fi
+
+  if ! git worktree list | grep -Fq "(bare)"; then
+    echo "git-worktree-new: not in a worktree layout" >&2
+    return 2
+  fi
+
+  if [[ $# -ne 1 ]]; then
+    echo "usage: git-worktree-new <name>" >&2
+    return 3
+  fi
+
+  local branch=$_git_ref worktree_root="$(git_worktree_root)"
+
+  if [[ -e "$worktree_root/$1" ]]; then
+    echo "git-worktree-new: $1: worktree already exists" >&2
+    return 4
+  fi
+
+  cd "$worktree_root"
+  git worktree add -b "petef/$1" "$1"
+  zoxide add "$1"
+  cd -
+
+  sesh connect "$worktree_root/$1"
+}
+alias nb=git-worktree-new # "new branch"
 
 # Git cd: no args takes you to the repo root, any other
 # directory arg is considered relative to the repo root

@@ -73,12 +73,18 @@ prompt_rc() {
 }
 
 prompt_context() {
-  local u h=$HOST
+  local u h=$HOST d="%~"
   [[ "$_me" = "false" ]] && u="${USERNAME}@"
   if [[ -n "$DEVSHELL" ]]; then
     h="${h%%-ds-*}-ds/${DEVSHELL}"
   fi
-  echo -n "${u}${h}(%35<...<%~) "
+
+  # if we're in a git repo, change the path to be relative to the git root
+  if [[ -n "$_git_root" ]]; then
+    d="${_git_repo}${PWD##$_git_root}"
+  fi
+
+  echo -n "${u}${h}(%35<...<${d}) "
 }
 
 prompt_git_branch() {
