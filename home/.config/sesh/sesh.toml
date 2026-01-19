@@ -1,0 +1,11 @@
+[[session]]
+name = "scratch"
+path = "~"
+
+[[session]]
+name = "dotfiles"
+path = "~/src/dotfiles"
+
+[[session]]
+name = "opencode config"
+path = "~/.config/opencode"
