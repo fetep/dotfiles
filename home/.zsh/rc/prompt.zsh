@@ -41,29 +41,6 @@ prompt_git_status() {
   _pre_prompt=1
 }
 
-prompt_python_venv() {
-  [[ -z $_python_venv ]] && return
-
-  echo -n -e "{ venv: ${_python_venv##*/} } "
-  _pre_prompt=1
-}
-
-prompt_rack_env() {
-  [[ -z $_rack_dir ]] && return
-
-  local color=0
-
-  case $RACK_ENV in
-    prod*)
-      echo -n -e "{ RACK_ENV: %{$fg_bold[red]%}${RACK_ENV}%{%f%b%} } "
-      ;;
-    *)
-      echo -n -e "{ RACK_ENV: ${RACK_ENV} } "
-  esac
-
-  _pre_prompt=1
-}
-
 prompt_rc() {
   if [[ $RETVAL -ne 0 ]]; then
     echo -n "%{$fg_bold[red]%}${RETVAL}%{%f%b%} "
@@ -123,8 +100,6 @@ build_prompt() {
 
   # first optional line
   prompt_git_status
-  prompt_python_venv
-  prompt_rack_env
   prompt_kube_context
 
   if [[ -n "$_pre_prompt" ]]; then

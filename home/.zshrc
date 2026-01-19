@@ -1,15 +1,9 @@
-# general
-umask 022
-HOST="${$(hostname)%%.*}"
+# config for interactive zsh sessions
 
 case $USER in
 petef|pfritchman) _me=true ;;
 *) _me=false ;;
 esac
-
-if [[ -n $TMUX ]]; then
-  _tmux_session=$(tmux display-message -p '#S')
-fi
 
 # vi mode, inspired by ksh
 setopt vi
@@ -91,10 +85,6 @@ compctl -g '*.ps' ghostview gv evince
 compctl -g '*.pdf' acroread xpdf evince
 compctl -j -P '%' kill bg fg
 compctl -v export unset vared
-
-autoload -U add-zsh-hook
-autoload -U compinit
-compinit
 
 # systems with older ncurses don't know about alacritty
 if [[ $TERM == "alacritty" ]]; then
@@ -204,28 +194,12 @@ function rand() {
 function r() {
   . ~/.zshenv
   . ~/.zshrc
-  fixagent
 }
-
-# rvm
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
 
 # dircolors
 if [[ -e ~/.dir_colors && -x =dircolors ]]; then
   eval $(dircolors ~/.dir_colors)
 fi
-
-fpath=("$HOME/.zsh/func" $fpath)
-autoload add-zsh-hook
-
-if [[ -e "/data" ]]; then
-  DEVSHELL_EXTRA_MOUNTS="/data"
-fi
-DEVSHELL_IMAGE=fetep/devshell
-
-for file in $HOME/.zsh/*.zsh(N); do
-  . $file
-done
 
 # configure editor
 if (( $+commands[nvim] )); then
@@ -238,3 +212,9 @@ else
   export EDITOR=vi
 fi
 export VISUAL="$EDITOR"
+
+export WLR_NO_HARDWARE_CURSORS=1
+
+for file in $HOME/.zsh/rc/*.zsh(N); do
+  . $file
+done

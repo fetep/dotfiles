@@ -1,3 +1,8 @@
+function _install_brew() {
+  bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  r
+}
+
 local dir
 
 for dir in /opt/homebrew /home/linuxbrew/.linuxbrew; do
