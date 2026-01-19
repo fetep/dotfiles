@@ -1,0 +1,14 @@
+# Run `ghostty +show-config --default --docs` to view a list of
+# all available config options and their default values.
+
+theme = Builtin Solarized Dark
+font-family = CaskaydiaMono Nerd Font Mono
+font-size = 14
+
+copy-on-select = clipboard
+link-url = true
+
+shell-integration = none
+cursor-style = block
+cursor-style-blink = false
+cursor-color = cell-foreground
