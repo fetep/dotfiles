@@ -18,7 +18,7 @@ picker() {
 # if we're run from inside of tmux, run in oneshot mode (either switching
 # manually or inside a display-popup).
 if [[ -n ${TMUX:-} ]]; then
-    picker
+    picker "$@"
     exit $?
 fi
 
