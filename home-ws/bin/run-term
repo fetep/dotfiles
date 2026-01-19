@@ -54,16 +54,20 @@ if [[ -e /etc/xdg/autostart/hidpi-daemon.desktop ]]; then
   hidpi_startup_wait
 fi
 
+# disable OpenGL gpu rendering when in a VM
+if command -v lscpu >/dev/null; then
+  if lscpu | grep -Fq "Hypervisor vendor"; then
+    export LIBGL_ALWAYS_SOFTWARE=1
+  fi
+fi
+
 term_type=$1
 case "$term_type" in
   main|'')
-    exec kitty
-    ;;
-  misc)
-    exec kitty --class misc tmux new-session -As misc
+    exec ghostty --command="zsh -c sesh-picker"
     ;;
   scratch)
-    exec kitty --class scratch tmux new-session -As scratch
+    exec ghostty --class=scratch
     ;;
   *)
     err "$term_type: unknown term type"

@@ -4,6 +4,7 @@
 theme = Builtin Solarized Dark
 font-family = CaskaydiaMono Nerd Font Mono
 font-size = 14
+gtk-titlebar = false
 
 copy-on-select = clipboard
 link-url = true
