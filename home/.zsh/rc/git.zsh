@@ -19,7 +19,7 @@ update-git-vars() {
   # if we're in a worktree layout, treat the bare path as the git root
   local repo_path
   repo_path="$(git worktree list | awk '$2 == "(bare)" {print $1;}')"
-  [[ -z "$repo_path" ]] && repo_path="$PWD"
+  [[ -z "$repo_path" ]] && repo_path="$_git_root"
   _git_repo="${repo_path##*/}"
 }
 
