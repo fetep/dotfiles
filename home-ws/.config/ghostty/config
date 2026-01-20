@@ -2,14 +2,25 @@
 # all available config options and their default values.
 
 theme = Builtin Solarized Dark
+
+# Titlebar colors (GTK/Linux only, requires window-theme = ghostty)
+window-theme = ghostty
+window-titlebar-background = #002b36
+window-titlebar-foreground = #ffaf00
+
 font-family = CaskaydiaMono Nerd Font Mono
 font-size = 14
-gtk-titlebar = false
 
 copy-on-select = clipboard
 link-url = true
 
-shell-integration = none
 cursor-style = block
 cursor-style-blink = false
-cursor-color = cell-foreground
+cursor-color = #b58900
+mouse-hide-while-typing = true
+
+selection-background = #ffaf00
+selection-foreground = #002b36
+split-divider-color = #ffaf00
+
+shell-integration = none
