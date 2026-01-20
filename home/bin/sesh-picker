@@ -8,6 +8,7 @@ if [[ $# -eq 0 ]]; then
     set -- --config --zoxide
 fi
 
+
 picker() {
     sesh connect "$(
         sesh list --icons "$@" \
@@ -24,5 +25,5 @@ fi
 
 # outside of tmux, we want to let people select a new sesh after the current one ends.
 while :; do
-    picker
+    picker "$@"
 done
