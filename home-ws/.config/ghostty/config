@@ -16,7 +16,7 @@ link-url = true
 
 cursor-style = block
 cursor-style-blink = false
-cursor-color = #b58900
+cursor-color = cell-foreground
 mouse-hide-while-typing = true
 
 selection-background = #ffaf00
