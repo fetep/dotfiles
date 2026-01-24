@@ -108,11 +108,15 @@ u() {
     return 1
   fi
 
-  cmd="git fetch -p origin"
+  cmd="git fetch --prune --prune-tags origin"
   echo "=> $cmd" >&2
   $cmd
 
-  # TODO: figure out if we need to stash/rebase/stash apply
+  if ! git ls-remote --branches --exit-code origin "$_git_ref"; then
+    echo "=> remote branch origin/$_git_ref no longer exists"
+    return 2
+  fi
+
   cmd="git rebase origin/$_git_ref"
   echo "=> $cmd" >&2
   $cmd

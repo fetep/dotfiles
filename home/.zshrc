@@ -214,7 +214,3 @@ fi
 export VISUAL="$EDITOR"
 
 export WLR_NO_HARDWARE_CURSORS=1
-
-for file in $HOME/.zsh/rc/*.zsh(N); do
-  . $file
-done

@@ -1,4 +1,5 @@
 # bracketed paste support, see https://cirw.in/blog/bracketed-paste
+[[ -o interactive ]] || return
 
 if [[ ${ZSH_VERSION:0:3} -ge 5.1 ]]; then
   set zle_bracketed_paste  # Explicitly restore this zsh default

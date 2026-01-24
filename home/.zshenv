@@ -50,6 +50,6 @@ autoload -U add-zsh-hook
 autoload -U compinit
 compinit
 
-for file in $HOME/.zsh/env/*.zsh(N); do
+for file in $HOME/.zsh/*.zsh(N); do
   . $file
 done

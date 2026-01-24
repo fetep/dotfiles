@@ -1,3 +1,5 @@
+[[ -o interactive ]] || return
+
 unset PS1 PROMPT
 unset RPS1 RPROMPT
 

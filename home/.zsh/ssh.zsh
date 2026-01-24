@@ -1,3 +1,5 @@
+[[ -o interactive ]] || return
+
 # two kinds of agents:
 #   forwarded agents where $SSH_AUTH_SOCK is in /tmp
 #   local agent listening on ~/.ssh/agent
