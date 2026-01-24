@@ -1,22 +1,22 @@
 [core]
-  excludesfile = ~/.gitignore_global
+	excludesfile = ~/.gitignore_global
 
 [init]
-  defaultBranch = master
+	defaultBranch = master
 
 [push]
-  default = simple
-  autoSetupRemote = true
+	default = simple
+	autoSetupRemote = true
 
 [alias]
-  logp = log --pretty=fuller
+	logp = log --pretty=fuller
 
 [user]
-  name = Pete Fritchman
-  email = petef@databits.net
+	name = Pete Fritchman
+	email = petef@databits.net
 
 [url "ssh://git@github.com/"]
-  insteadOf = https://github.com/
+	insteadOf = https://github.com/
 
 [rebase]
-  autoStash = true
+	autoStash = true
