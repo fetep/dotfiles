@@ -50,5 +50,3 @@ function fixagent() {
     flock -xn "$lock" -c "ssh-add $keys"
   fi
 }
-
-fixagent
