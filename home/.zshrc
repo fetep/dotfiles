@@ -124,11 +124,7 @@ function title() {
   local curdir="(%30<...<%~)"
   local location="${HOST}"
 
-  local tmux
   $_me || location="${USERNAME}@${location}"
-  if [[ -n $_tmux_session ]]; then
-    tmux="[$_tmux_session] "
-  fi
 
   cmd="%$((COLUMNS-30))>...>$cmd%<<"
   unset PROMPT_SUBST
@@ -140,7 +136,7 @@ function title() {
         else
           print -Pn "\ek${cmd}\e\\"               # window_name
         fi
-        print -Pn "\e_${tmux}${location}${curdir}\e\\"   # pane_title
+        print -Pn "\e_${location}${curdir}\e\\"   # pane_title
       else
         print -Pn "\ek${cmd}\e\\"                 # screen title
         print -Pn "\e_${curdir} ${location}\e\\"  # screen location
