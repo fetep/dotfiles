@@ -11,6 +11,7 @@ window-titlebar-foreground = #ffaf00
 font-family = CaskaydiaMono Nerd Font Mono
 font-size = 14
 
+app-notifications = no-clipboard-copy
 copy-on-select = clipboard
 link-url = true
 
