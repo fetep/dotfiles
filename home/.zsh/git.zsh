@@ -112,10 +112,11 @@ u() {
   echo "=> $cmd" >&2
   $cmd
 
-  if ! git ls-remote --branches --exit-code origin "$_git_ref"; then
-    echo "=> remote branch origin/$_git_ref no longer exists"
-    return 2
-  fi
+  # not working with all git versions
+  #if ! git ls-remote --branches --exit-code origin "$_git_ref"; then
+  #  echo "=> remote branch origin/$_git_ref no longer exists"
+  #  return 2
+  #fi
 
   cmd="git rebase origin/$_git_ref"
   echo "=> $cmd" >&2
@@ -227,6 +228,7 @@ git-worktree-convert() {
   cd "$git_checkout" || return 3
 
   git clone --bare "$origin" .git
+  (cd .git && git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*")
   git worktree add "$default_branch"
   zoxide add "$default_branch"
   git worktree add review
@@ -234,12 +236,7 @@ git-worktree-convert() {
 }
 
 git-worktree-new() {
-  if [[ -z "$_git_ref" ]]; then
-    echo "git-worktree-new: not in a git repo" >&2
-    return 1
-  fi
-
-  if ! git worktree list | grep -Fq "(bare)"; then
+  if ! git worktree list 2>/dev/null | grep -Fq "(bare)"; then
     echo "git-worktree-new: not in a worktree layout" >&2
     return 2
   fi
