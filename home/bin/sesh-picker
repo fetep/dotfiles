@@ -3,12 +3,6 @@
 
 set -euo pipefail
 
-# defaults
-if [[ $# -eq 0 ]]; then
-    set -- --config --zoxide
-fi
-
-
 picker() {
     sesh connect "$(
         sesh list --icons "$@" \
