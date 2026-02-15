@@ -26,3 +26,4 @@
 [diff-so-fancy]
 	changeHunkIndicators = true
 	stripLeadingSymbols = false
+	markEmptyLines = false
