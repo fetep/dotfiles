@@ -211,4 +211,6 @@ export VISUAL="$EDITOR"
 
 export WLR_NO_HARDWARE_CURSORS=1
 
-eval "$(direnv hook zsh)"
+if (( $+commands[direnv] )); then
+  eval "$(direnv hook zsh)"
+fi
