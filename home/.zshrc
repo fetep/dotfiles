@@ -149,6 +149,11 @@ function title() {
 }
 
 function precmd() {
+  # check if our forwarded ssh-agent socket disappeared
+  if [[ -n $SSH_AUTH_SOCK && ! -S $SSH_AUTH_SOCK ]]; then
+    fixagent
+  fi
+
   title "-zsh"
 }
 
@@ -190,6 +195,7 @@ function rand() {
 function r() {
   . ~/.zshenv
   . ~/.zshrc
+  fixagent
 }
 
 # dircolors
