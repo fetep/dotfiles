@@ -22,3 +22,12 @@ Use Conventional Commits: `<type>[(scope)]: <description>`
 Core types: `fix`, `feat`, `refactor`, `chore`, `docs`, `test`, `perf`, `ci`, `build`
 Breaking changes: append `!` (e.g., `feat!:` or `feat(api)!:`)
 Keep descriptions brief, imperative mood.
+
+## Handling Unknowns
+
+If you can't find or don't know something, don't assume. Ask me.
+
+When building a plan or executing a task and an unknown comes up — missing
+context, ambiguous requirements, unclear conventions, unfamiliar patterns —
+stop and ask rather than guessing. Present a recommended default and
+options when possible, but never assume and continue without confirmation.
