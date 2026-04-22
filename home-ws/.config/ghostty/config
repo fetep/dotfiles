@@ -1,7 +1,7 @@
 # Run `ghostty +show-config --default --docs` to view a list of
 # all available config options and their default values.
 
-theme = Builtin Solarized Dark
+theme = iTerm2 Solarized Dark
 
 # Titlebar colors (GTK/Linux only, requires window-theme = ghostty)
 window-theme = ghostty
