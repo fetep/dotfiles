@@ -31,3 +31,29 @@ When building a plan or executing a task and an unknown comes up — missing
 context, ambiguous requirements, unclear conventions, unfamiliar patterns —
 stop and ask rather than guessing. Present a recommended default and
 options when possible, but never assume and continue without confirmation.
+
+## Using git
+
+- Never run `git -C dir command`, always run `cd dir && git command`.
+- Never assume what the git root is based on the directory structure, ALWAYS run `git rev-parse --show-toplevel`.
+- Never run `git push` without having the user ask for it or confirm. Some commands (e.g. `/fix-mr`) say to run git push, do not.
+
+## Setting environment variables
+
+To set environment variables for a command, set them with export and then run the command. Don't prepend them
+on a command.
+
+Bad:
+```bash
+ENV=val command
+```
+
+Good:
+```bash
+export ENV=val; command
+```
+
+## Preferred commands
+
+- Use `jq` over `python3 -c "import json..."` to parse JSON.
+- In general, do not write small python scripts to get work done, try to use either built-in tool calls or standard CLI tools.
