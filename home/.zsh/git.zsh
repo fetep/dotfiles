@@ -33,7 +33,13 @@ git_default_branch() {
 
   local branch
   branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
-  [[ -z "$branch" ]] && branch=$(git remote show origin 2>/dev/null | awk '/HEAD branch/ {print $NF}')
+  if [[ -z "$branch" ]]; then
+    if git show-ref -q refs/remotes/origin/main; then
+      branch=main
+    elif git show-ref -q refs/remotes/origin/master; then
+      branch=master
+    fi
+  fi
 
   if [[ -z "$branch" ]]; then
     echo "git_default_branch: can't determine default branch" >&2
@@ -258,7 +264,7 @@ git-worktree-new() {
   zoxide add "$1"
   cd -
 
-  sesh connect "$worktree_root/$1"
+  exec sesh connect "$worktree_root/$1"
 }
 alias nb=git-worktree-new # "new branch"
 
@@ -272,4 +278,13 @@ gcd() {
 
   cd "$(git rev-parse --show-toplevel)"
   [[ $# -gt 0 ]] && cd "$@"
+}
+
+# Git Rebase Interactive on all commits since main.
+alias gri='git rebase --interactive $(git_default_branch)'
+
+# grm: Git Rebase against Main/Master
+function grm() {
+  git fetch origin
+  git rebase "origin/$(git_default_branch)"
 }
