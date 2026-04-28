@@ -27,3 +27,11 @@ Append `!` for breaking changes. Prefer one line; add a body only when needed.
 - Prefer built-in tools and standard CLI tools over small Python scripts.
 - Use `jq` for JSON parsing.
 - Set command env vars with `export VAR=value; command`, not `VAR=value command`.
+
+## Conciseness — MANDATORY
+
+- Bullets over paragraphs; lists over prose.
+- No preamble, summaries, or sign-offs.
+- No repetition or hedging; one clear sentence beats three.
+- Cut every word that doesn't add meaning.
+- Shorter is always better; brevity is thoroughness.
