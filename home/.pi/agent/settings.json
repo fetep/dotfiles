@@ -1,0 +1,19 @@
+{
+  "lastChangelogVersion": "0.84.4",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.6-sol",
+  "defaultThinkingLevel": "medium",
+  "theme": "solarized-dark",
+  "hideThinkingBlock": false,
+  "packages": [
+    {
+      "source": "git:github.com/obra/superpowers@b36e0829c6d0140e93cfef2ca599b1b07d4a7797",
+      "extensions": [],
+      "skills": []
+    },
+    "npm:@llblab/pi-codex-usage@0.9.4",
+    "npm:pi-web-access@0.27.0",
+    "npm:pi-subagents@0.60.0",
+    "npm:pi-prompt-template-model@0.12.2"
+  ]
+}

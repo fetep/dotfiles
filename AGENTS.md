@@ -17,6 +17,7 @@ dotfiles/
 ├── brew/             # Homebrew package management
 │   ├── Brewfile      # Package list
 │   └── Makefile      # brew bundle automation
+├── tests/pi/         # Node tests for Pi extensions
 └── backup/           # Backup of replaced files (auto-created)
 ```
 
@@ -37,9 +38,12 @@ make -C brew              # Install/update packages from Brewfile
 make -C brew Brewfile     # Regenerate Brewfile from installed packages
 ```
 
-### No Formal Tests
-This is a configuration repository. There is no test suite.
-Verify changes by deploying and testing interactively.
+### Tests
+```bash
+node --test tests/pi/*.test.*
+```
+
+Other configuration changes have no automated suite; verify them interactively.
 
 ## Languages & File Types
 

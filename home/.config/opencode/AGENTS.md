@@ -12,6 +12,7 @@
 - Never `git push` unless the user asked or confirmed after seeing the push delta.
 - Normal push: show local-only commits, e.g. `git log --oneline --decorate @{u}..HEAD`, plus branch/remote context.
 - Force push: show remote-vs-local divergence, e.g. left/right log or equivalent summary.
+- **NEVER** change the author name or email. Our `.gitconfig` sets a default.
 
 ## Per-Project AGENTS.md
 
@@ -35,3 +36,7 @@ Append `!` for breaking changes. Prefer one line; add a body only when needed.
 - No repetition or hedging; one clear sentence beats three.
 - Cut every word that doesn't add meaning.
 - Shorter is always better; brevity is thoroughness.
+
+## Superpowers Artifacts
+
+- Never stage or commit files under `docs/superpowers/plans/` or `docs/superpowers/specs/`.
