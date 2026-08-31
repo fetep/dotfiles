@@ -167,6 +167,8 @@ if vim.fn.exists('g:some_var') then ... end
 
 ## File Editing Guidelines
 
+- Keep `home/.pi/agent/AGENTS.md` as a symlink to `../../.config/opencode/AGENTS.md`; never replace it with a
+  regular file. Edit the target instead.
 - Keep files focused and modular (see `~/.zsh/*.zsh` pattern)
 - Add comments for non-obvious behavior
 - Highlight trailing whitespace is enabled - don't leave any

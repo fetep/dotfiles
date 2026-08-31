@@ -29,7 +29,7 @@ link() {
     mv "$HOME/$dotfile" "$backdir/$dotfile"
   fi
 
-  link_target="$dotdir/$dotfile"
+  link_target="$(readlink -f "$dotdir/$dotfile")"
   if [[ -L "$HOME/$dotfile" ]]; then
     existing="$(readlink -f "$HOME/$dotfile")"
     if [[ "$existing" != "$link_target" ]]; then
@@ -78,7 +78,7 @@ link_dotdir() {
   for d in "${dir_symlinks[@]}"; do
     excludes+=(-path "./$d" -prune -o -path "./$d/*" -prune -o)
   done
-  (cd "$dotdir" && find . "${excludes[@]}" -type f \! -path '*/.*.sw*' -print0) |
+  (cd "$dotdir" && find . "${excludes[@]}" \( -type f -o -type l \) \! -path '*/.*.sw*' -print0) |
   while IFS= read -r -d '' dotfile; do
     link "${dotfile##./}" "$dotdir"
   done
