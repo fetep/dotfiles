@@ -16,8 +16,13 @@ backdir="$base/backup"
 mkdir -p -m 0700 "$backdir"
 
 # update submodules on a fresh checkout
-git submodule init
-git submodule update --recursive
+update_submodules() {
+  local repo="$1"
+
+  (cd "$repo" && git submodule init && git submodule update --recursive)
+}
+
+update_submodules "$base"
 
 link() {
   local dotfile="$1" dotdir="$2"
@@ -84,13 +89,26 @@ link_dotdir() {
   done
 }
 
-link_dotdirs() {
-  local srcbase="$1"
-  for d in "${dir_symlinks[@]}"; do
-    if [[ -d "$srcbase/$d" ]]; then
-      link_dir "$d" "$srcbase"
-    fi
+merge_dotdir() {
+  local dotdir="$1" mergedbase="$2"
+  shift 2
+  local srcbase dotfile dotpath
+
+  rm -rf "$mergedbase/$dotdir"
+  mkdir -p "$mergedbase/$dotdir"
+
+  for srcbase in "$@"; do
+    [[ -d "$srcbase/$dotdir" ]] || continue
+    (cd "$srcbase/$dotdir" && find . \( -type f -o -type l \) \! -path '*/.*.sw*' -print0) |
+    while IFS= read -r -d '' dotfile; do
+      dotfile="${dotfile##./}"
+      dotpath="$(dirname "$dotfile")"
+      mkdir -p "$mergedbase/$dotdir/$dotpath"
+      ln -sfn "$srcbase/$dotdir/$dotfile" "$mergedbase/$dotdir/$dotfile"
+    done
   done
+
+  link_dir "$dotdir" "$mergedbase"
 }
 
 is_workstation() {
@@ -106,15 +124,46 @@ is_workstation() {
   echo "$ws"
 }
 
-echo "=> linking dotfiles in $base/home"
-link_dotdirs "$base/home"
-link_dotdir "$base/home"
+workstation="$(is_workstation)"
+overlay="${DOTFILES_OVERLAY-}"
+source_dirs=("$base/home")
 
-if [[ $(is_workstation) == "true" ]]; then
-  echo "=> linking workstation dotfiles in $base/home-ws"
-  link_dotdirs "$base/home-ws"
-  link_dotdir "$base/home-ws"
+if [[ "$workstation" == "true" ]]; then
+  source_dirs+=("$base/home-ws")
 fi
+
+if [[ -n "$overlay" && -d "$overlay" ]]; then
+  overlay="$(cd "$overlay" && pwd)"
+  [[ -e "$overlay/.git" ]] && update_submodules "$overlay"
+  [[ -d "$overlay/home" ]] && source_dirs+=("$overlay/home")
+  if [[ "$workstation" == "true" && -d "$overlay/home-ws" ]]; then
+    source_dirs+=("$overlay/home-ws")
+  fi
+  echo "=> applying private overlay from $overlay"
+fi
+
+for srcbase in "${source_dirs[@]}"; do
+  echo "=> linking dotfiles in $srcbase"
+  link_dotdir "$srcbase"
+done
+
+for d in "${dir_symlinks[@]}"; do
+  overlay_has_dir="false"
+  if [[ -n "$overlay" && -d "$overlay" ]]; then
+    [[ -d "$overlay/home/$d" ]] && overlay_has_dir="true"
+    if [[ "$workstation" == "true" && -d "$overlay/home-ws/$d" ]]; then
+      overlay_has_dir="true"
+    fi
+  fi
+
+  if [[ "$overlay_has_dir" == "true" ]]; then
+    merge_dotdir "$d" "$backdir/merged-home" "${source_dirs[@]}"
+  else
+    for srcbase in "${source_dirs[@]}"; do
+      [[ -d "$srcbase/$d" ]] && link_dir "$d" "$srcbase"
+    done
+  fi
+done
 
 if command -v brew >/dev/null; then
   make -C brew
