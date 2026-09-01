@@ -13,6 +13,7 @@
     },
     "npm:@llblab/pi-codex-usage@0.9.4",
     "npm:pi-web-access@0.27.0",
+    "npm:pi-mcp-adapter@2.31.0",
     "npm:pi-subagents@0.60.0",
     "npm:pi-prompt-template-model@0.12.2"
   ]
