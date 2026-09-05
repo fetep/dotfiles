@@ -41,6 +41,11 @@ function createHarness(enableValue, agentDir = fixtureAgentDir) {
 
   const ctx = {
     ui: {
+      theme: {
+        fg(color, text) {
+          return `<${color}>${text}</${color}>`;
+        },
+      },
       notify(text, level) {
         notifications.push({ text, level });
       },
@@ -83,7 +88,7 @@ test('PI_SP_ENABLE=true enables Superpowers for the whole process', async () => 
 
   assert.deepEqual(harness.statuses.at(-1), {
     key: 'superpowers-toggle',
-    text: 'superpowers:on',
+    text: '<accent>●</accent><dim> superpowers:</dim><success>on</success>',
   });
 
   const discover = harness.handlers.get('resources_discover')[0];
@@ -99,7 +104,7 @@ for (const value of [undefined, '', '0', 'false', 'TRUE', 'yes', 'on']) {
 
     assert.deepEqual(harness.statuses.at(-1), {
       key: 'superpowers-toggle',
-      text: 'superpowers:off',
+      text: '<dim>○</dim><dim> superpowers:</dim><dim>off</dim>',
     });
 
     const discover = harness.handlers.get('resources_discover')[0];
@@ -113,7 +118,10 @@ for (const value of [undefined, '', '0', 'false', 'TRUE', 'yes', 'on']) {
 test('PI_SP_ENABLE=1 enables Superpowers', async () => {
   const harness = createHarness('1');
   await emit(harness, 'session_start', { reason: 'startup' });
-  assert.equal(harness.statuses.at(-1).text, 'superpowers:on');
+  assert.equal(
+    harness.statuses.at(-1).text,
+    '<accent>●</accent><dim> superpowers:</dim><success>on</success>',
+  );
 });
 
 test('enabled sessions inject the bootstrap and custom guidance', async () => {

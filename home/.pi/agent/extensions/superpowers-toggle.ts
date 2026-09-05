@@ -99,7 +99,10 @@ export default function superpowersToggleExtension(pi: ExtensionAPI) {
   let loadWarningShown = false;
 
   const updateStatus = (ctx: ExtensionContext) => {
-    ctx.ui.setStatus(STATUS_KEY, `superpowers:${enabled ? 'on' : 'off'}`);
+    const glyph = ctx.ui.theme.fg(enabled ? 'accent' : 'dim', enabled ? '●' : '○');
+    const label = ctx.ui.theme.fg('dim', ' superpowers:');
+    const state = ctx.ui.theme.fg(enabled ? 'success' : 'dim', enabled ? 'on' : 'off');
+    ctx.ui.setStatus(STATUS_KEY, glyph + label + state);
   };
 
   pi.on('session_start', (_event, ctx) => {
