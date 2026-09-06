@@ -1,6 +1,7 @@
 tap "anomalyco/tap", trusted: true
 tap "hashicorp/tap", trusted: true
 tap "oven-sh/bun", trusted: true
+tap "pawelb0/tap", trusted: true
 
 brew "anomalyco/tap/opencode"
 brew "bazelisk"
@@ -15,6 +16,7 @@ brew "hashicorp/tap/terraform"
 brew "neovim"
 brew "node"
 brew "oven-sh/bun/bun"
+brew "pawelb0/tap/mdcat-ng"
 brew "pi-coding-agent"
 brew "pre-commit"
 brew "ripgrep"
