@@ -18,6 +18,7 @@ for dir in \
   /usr/local/{s,}bin \
   {/var/lib/snapd/snap,/snap}/bin \
   $HOME/.cargo/bin \
+  /home/petef/.cache/.bun/bin \
   /opt/puppetlabs/{,/puppet}/bin; do
   [[ -e "$dir" ]] && path+=("$dir")
 done
