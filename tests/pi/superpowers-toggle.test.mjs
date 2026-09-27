@@ -82,6 +82,31 @@ async function emit(harness, event, payload = {}) {
   return current;
 }
 
+async function shutdownOutput(enableValue, reason = 'quit', options = {}) {
+  const harness = createHarness(enableValue);
+  harness.ctx.sessionManager = {
+    isPersisted: () => options.persisted ?? true,
+    getSessionFile: () => options.file ?? repoPiInstructions,
+    getSessionDir: () => options.dir ?? '/home/petef/.pi/agent/sessions',
+    usesDefaultSessionDir: () => options.defaultDir ?? true,
+    getSessionId: () => '01a0e3ef-9dec-7189-9d49-1bfb0d689cca',
+  };
+  const ttyDescriptor = Object.getOwnPropertyDescriptor(process.stdout, 'isTTY');
+  const writeDescriptor = Object.getOwnPropertyDescriptor(process.stdout, 'write');
+  let output = '';
+  try {
+    Object.defineProperty(process.stdout, 'isTTY', { configurable: true, value: options.tty ?? true });
+    process.stdout.write = (text) => { output += text; return true; };
+    await emit(harness, 'session_shutdown', { reason });
+  } finally {
+    if (ttyDescriptor) Object.defineProperty(process.stdout, 'isTTY', ttyDescriptor);
+    else delete process.stdout.isTTY;
+    if (writeDescriptor) Object.defineProperty(process.stdout, 'write', writeDescriptor);
+    else delete process.stdout.write;
+  }
+  return output;
+}
+
 test('PI_SP_ENABLE=true enables Superpowers for the whole process', async () => {
   const harness = createHarness('true');
   await emit(harness, 'session_start', { reason: 'startup' });
@@ -176,6 +201,29 @@ test('bootstrap injection stops after the first enabled agent run', async () => 
   const result = await emit(harness, 'context', { messages: [userMessage] });
 
   assert.deepEqual(result.messages, [userMessage]);
+});
+
+test('quit prints a Superpowers resume command for persisted TTY sessions', async () => {
+  assert.equal(
+    await shutdownOutput('true'),
+    'To resume with Superpowers: pi-sp --session 01a0e3ef-9dec-7189-9d49-1bfb0d689cca\n',
+  );
+});
+
+test('custom session directories are quoted in the resume command', async () => {
+  assert.equal(
+    await shutdownOutput('1', 'quit', { defaultDir: false, dir: "/tmp/Pete's sessions" }),
+    "To resume with Superpowers: pi-sp --session-dir '/tmp/Pete'\\''s sessions' --session 01a0e3ef-9dec-7189-9d49-1bfb0d689cca\n",
+  );
+});
+
+test('resume command is omitted outside an enabled, persisted TTY quit', async () => {
+  assert.equal(await shutdownOutput('false'), '');
+  assert.equal(await shutdownOutput('true', 'reload'), '');
+  assert.equal(await shutdownOutput('true', 'new'), '');
+  assert.equal(await shutdownOutput('true', 'quit', { tty: false }), '');
+  assert.equal(await shutdownOutput('true', 'quit', { persisted: false }), '');
+  assert.equal(await shutdownOutput('true', 'quit', { file: '/nonexistent/pi-session.jsonl' }), '');
 });
 
 test('commands explain how to disable Superpowers on restart', async () => {

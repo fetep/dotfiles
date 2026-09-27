@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { resolve } from 'node:path';
 import type {
@@ -115,6 +115,20 @@ export default function superpowersToggleExtension(pi: ExtensionAPI) {
   pi.on('resources_discover', () => (
     enabled ? { skillPaths: [skillsDir] } : undefined
   ));
+
+  pi.on('session_shutdown', (event, ctx) => {
+    if (!enabled || event.reason !== 'quit' || !process.stdout.isTTY) return;
+    const session = ctx.sessionManager;
+    const file = session.getSessionFile();
+    if (!session.isPersisted() || !file || !existsSync(file)) return;
+
+    const dir = session.getSessionDir();
+    const quotedDir = /^[a-zA-Z0-9_\-./~:@]+$/.test(dir)
+      ? dir
+      : `'${dir.replace(/'/g, "'\\''")}'`;
+    const sessionDir = session.usesDefaultSessionDir() ? '' : ` --session-dir ${quotedDir}`;
+    process.stdout.write(`To resume with Superpowers: pi-sp${sessionDir} --session ${session.getSessionId()}\n`);
+  });
 
   pi.on('session_compact', () => {
     injectBootstrap = enabled;
