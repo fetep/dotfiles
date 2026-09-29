@@ -77,36 +77,62 @@ link_dir() {
 
 dir_symlinks=(.zsh .config/nvim)
 
+# Later source directories have precedence over earlier ones.
+has_higher_priority_file() {
+  local dotfile="$1" srcbase
+  shift
+  for srcbase in "$@"; do
+    [[ -f "$srcbase/$dotfile" || -L "$srcbase/$dotfile" ]] && return 0
+  done
+  return 1
+}
+
 link_dotdir() {
-  local dotdir="$1"
+  local dotdir="$1" dotfile
+  shift
   local excludes=()
   for d in "${dir_symlinks[@]}"; do
     excludes+=(-path "./$d" -prune -o -path "./$d/*" -prune -o)
   done
   (cd "$dotdir" && find . "${excludes[@]}" \( -type f -o -type l \) \! -path '*/.*.sw*' -print0) |
   while IFS= read -r -d '' dotfile; do
-    link "${dotfile##./}" "$dotdir"
+    dotfile="${dotfile##./}"
+    has_higher_priority_file "$dotfile" "$@" || link "$dotfile" "$dotdir"
   done
 }
 
 merge_dotdir() {
   local dotdir="$1" mergedbase="$2"
   shift 2
-  local srcbase dotfile dotpath
+  local sources=("$@")
+  local srcbase dotfile dotpath target i
 
-  rm -rf "$mergedbase/$dotdir"
   mkdir -p "$mergedbase/$dotdir"
 
-  for srcbase in "$@"; do
+  for ((i = 0; i < ${#sources[@]}; i++)); do
+    srcbase="${sources[i]}"
     [[ -d "$srcbase/$dotdir" ]] || continue
     (cd "$srcbase/$dotdir" && find . \( -type f -o -type l \) \! -path '*/.*.sw*' -print0) |
     while IFS= read -r -d '' dotfile; do
       dotfile="${dotfile##./}"
+      has_higher_priority_file "$dotdir/$dotfile" "${sources[@]:i+1}" && continue
       dotpath="$(dirname "$dotfile")"
+      target="$srcbase/$dotdir/$dotfile"
       mkdir -p "$mergedbase/$dotdir/$dotpath"
-      ln -sfn "$srcbase/$dotdir/$dotfile" "$mergedbase/$dotdir/$dotfile"
+      if [[ ! -L "$mergedbase/$dotdir/$dotfile" || "$(readlink "$mergedbase/$dotdir/$dotfile")" != "$target" ]]; then
+        ln -sfn "$target" "$mergedbase/$dotdir/$dotfile"
+      fi
     done
   done
+
+  (cd "$mergedbase/$dotdir" && find . -type l -print0) |
+  while IFS= read -r -d '' dotfile; do
+    dotfile="${dotfile##./}"
+    if ! has_higher_priority_file "$dotdir/$dotfile" "${sources[@]}"; then
+      rm "$mergedbase/$dotdir/$dotfile"
+    fi
+  done
+  find "$mergedbase/$dotdir" -mindepth 1 -depth -type d -empty -delete
 
   link_dir "$dotdir" "$mergedbase"
 }
@@ -142,9 +168,10 @@ if [[ -n "$overlay" && -d "$overlay" ]]; then
   echo "=> applying private overlay from $overlay"
 fi
 
-for srcbase in "${source_dirs[@]}"; do
+for ((i = 0; i < ${#source_dirs[@]}; i++)); do
+  srcbase="${source_dirs[i]}"
   echo "=> linking dotfiles in $srcbase"
-  link_dotdir "$srcbase"
+  link_dotdir "$srcbase" "${source_dirs[@]:i+1}"
 done
 
 for d in "${dir_symlinks[@]}"; do

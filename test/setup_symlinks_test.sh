@@ -79,3 +79,43 @@ if [[ "$(cat "$test_home/.zsh/cloudflare.zsh")" != "cloudflare zsh only" ]]; the
   echo "Overlay-only file in a merged directory was not deployed" >&2
   exit 1
 fi
+
+merged_shared="$fixture/backup/merged-home/.zsh/shared.zsh"
+touch -h -t 200001010000 "$merged_shared"
+merged_before="$(ls -ld "$merged_shared")"
+
+second_run="$(
+  export DOTFILES_OVERLAY="$overlay"
+  export HOME="$test_home"
+  export PATH="$fake_bin:/usr/bin:/bin"
+  "$fixture/setup.sh"
+)"
+
+if [[ "$second_run" == *"swapping "* || "$second_run" == *"linking $test_home/"* ]]; then
+  echo "An unchanged overlay relinked dotfiles on the second run" >&2
+  echo "$second_run" >&2
+  exit 1
+fi
+
+if [[ "$(ls -ld "$merged_shared")" != "$merged_before" ]]; then
+  echo "An unchanged overlay recreated a merged symlink" >&2
+  exit 1
+fi
+
+rm "$overlay/home/.example" "$overlay/home/.zsh/shared.zsh" "$overlay/home/.zsh/cloudflare.zsh"
+(
+  export DOTFILES_OVERLAY="$overlay"
+  export HOME="$test_home"
+  export PATH="$fake_bin:/usr/bin:/bin"
+  "$fixture/setup.sh" >/dev/null
+)
+
+if [[ "$(cat "$test_home/.example")" != "public" ]]; then
+  echo "Public dotfile was not restored when the overlay file was removed" >&2
+  exit 1
+fi
+
+if [[ "$(cat "$test_home/.zsh/shared.zsh")" != "public zsh" || -e "$test_home/.zsh/cloudflare.zsh" ]]; then
+  echo "Merged directory did not update when overlay files were removed" >&2
+  exit 1
+fi
