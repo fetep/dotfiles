@@ -14,10 +14,26 @@ export function nextThinkingLevel(current: ThinkingLevel): ThinkingLevel {
 }
 
 export default function thinkingCycleExtension(pi: ExtensionAPI) {
+  let preferredThinkingLevel: ThinkingLevel | undefined;
+
+  // Runtime APIs are unavailable during extension loading, including /reload.
+  pi.on('session_start', () => {
+    preferredThinkingLevel = pi.getThinkingLevel();
+  });
+
   pi.registerShortcut('shift+tab', {
     description: 'Cycle medium, high, and xhigh thinking levels',
     handler: () => {
-      pi.setThinkingLevel(nextThinkingLevel(pi.getThinkingLevel()));
+      preferredThinkingLevel = nextThinkingLevel(pi.getThinkingLevel());
+      pi.setThinkingLevel(preferredThinkingLevel);
     },
+  });
+
+  pi.on('model_select', (event) => {
+    if (event.source === 'restore') {
+      preferredThinkingLevel = pi.getThinkingLevel();
+    } else if (preferredThinkingLevel !== undefined) {
+      pi.setThinkingLevel(preferredThinkingLevel);
+    }
   });
 }
