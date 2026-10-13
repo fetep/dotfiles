@@ -181,6 +181,12 @@ function preexec() {
     fi
     cmd="${jobtexts[${jobnum#%}]}"
   fi
+
+  # Keep Pi's window-name prefix short; Pi supplies the session's pane title.
+  local command_name="${${(z)cmd}[1]}"
+  case "$command_name" in
+    pi|pi-sp) cmd="$command_name" ;;
+  esac
   title "$cmd"
 }
 
