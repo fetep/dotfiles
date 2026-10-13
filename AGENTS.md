@@ -45,6 +45,13 @@ node --test tests/pi/*.test.*
 
 Other configuration changes have no automated suite; verify them interactively.
 
+### Pi Packages and MCP
+- Package version pins live in `home/.pi/agent/settings.json`.
+- Use `pi install npm:<package>@<version>` to change an installed version; `pi update` keeps pins.
+- Use Pi's built-in MCP support, not `pi-mcp-adapter`; configure servers in
+  `~/.pi/agent/mcp.json` or a trusted project's `.pi/mcp.json`.
+- Verify startup with `pi --no-session --verbose` and MCP connections with `pi mcp list`.
+
 ## Languages & File Types
 
 | Type | Files | Purpose |

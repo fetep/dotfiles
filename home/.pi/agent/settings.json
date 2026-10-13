@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.85.0",
+  "lastChangelogVersion": "1.1.0",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-6.1-sol",
   "defaultThinkingLevel": "high",
@@ -12,9 +12,8 @@
       "skills": []
     },
     "npm:@llblab/pi-codex-usage@0.9.4",
-    "npm:pi-web-access@0.27.0",
-    "npm:pi-mcp-adapter@2.31.0",
-    "npm:pi-subagents@0.60.0",
+    "npm:pi-web-access@0.40.0",
+    "npm:pi-subagents@0.78.0",
     "npm:pi-prompt-template-model@0.12.2"
   ]
 }
