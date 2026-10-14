@@ -10,11 +10,11 @@ const testDir = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(testDir, '../..');
 const agentDir = resolve(repoRoot, 'home/.pi/agent/agents');
 const expected = {
-  'implementer-fast': ['openai-codex/gpt-5.6-sol', 'low'],
-  implementer: ['openai-codex/gpt-5.6-sol', 'medium'],
-  'implementer-deep': ['openai-codex/gpt-5.6-sol', 'high'],
-  'task-reviewer': ['openrouter/google/gemini-3.7-flash', 'medium'],
-  'deep-reviewer': ['openrouter/x-ai/grok-4.6', 'high'],
+  'implementer-fast': ['openai-codex/gpt-6.1-sol', 'low'],
+  implementer: ['openai-codex/gpt-6.1-sol', 'medium'],
+  'implementer-deep': ['openai-codex/gpt-6.1-sol', 'high'],
+  'task-reviewer': ['openrouter/google/gemini-3.8-flash', 'medium'],
+  'deep-reviewer': ['openrouter/x-ai/grok-4.7', 'high'],
   explore: ['openrouter/z-ai/glm-5.3-flash', 'low'],
 };
 const expectedTools = {
@@ -79,7 +79,7 @@ test('implementers are Sol-only writers with editing tools', () => {
     const tools = frontmatter.tools.split(/,\s*/);
     assert.ok(tools.includes('edit'), `${name} can edit`);
     assert.ok(tools.includes('write'), `${name} can write`);
-    assert.match(frontmatter.model, /^openai-codex\/gpt-5\.6-sol$/);
+    assert.match(frontmatter.model, /^openai-codex\/gpt-6\.1-sol$/);
   }
 });
 
@@ -178,10 +178,10 @@ test('all configured primary models exist in the Pi registry', () => {
     return `${provider}/${model}`;
   }));
   const configuredModels = [
-    'openai-codex/gpt-5.6-sol',
-    'openrouter/google/gemini-3.7-flash',
+    'openai-codex/gpt-6.1-sol',
+    'openrouter/google/gemini-3.8-flash',
     'openrouter/z-ai/glm-5.3-flash',
-    'openrouter/x-ai/grok-4.6',
+    'openrouter/x-ai/grok-4.7',
   ];
   for (const model of configuredModels) assert.ok(availableModels.has(model), model);
 });

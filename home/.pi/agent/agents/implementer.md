@@ -1,7 +1,7 @@
 ---
 name: implementer
 description: Superpowers integration implementer for multi-file coordination, pattern matching, and debugging
-model: openai-codex/gpt-5.6-sol
+model: openai-codex/gpt-6.1-sol
 thinking: medium
 tools: read, grep, find, ls, bash, edit, write, contact_supervisor
 systemPromptMode: replace
