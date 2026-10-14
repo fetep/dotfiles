@@ -2,8 +2,6 @@
 name: deep-reviewer
 description: Consequential Superpowers reviewer for architecture, high-risk changes, plans, specifications, and whole branches
 model: openrouter/x-ai/grok-4.6
-fallbackModels:
-  - openrouter/moonshotai/kimi-k3:high
 thinking: high
 tools: read, grep, find, ls
 systemPromptMode: replace

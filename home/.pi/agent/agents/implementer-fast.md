@@ -2,8 +2,6 @@
 name: implementer-fast
 description: Mechanical Superpowers implementer for fully specified 1–2 file tasks with no open decisions
 model: openai-codex/gpt-5.6-sol
-fallbackModels:
-  - openrouter/openai/gpt-5.6-sol
 thinking: low
 tools: read, grep, find, ls, bash, edit, write, contact_supervisor
 systemPromptMode: replace

@@ -2,8 +2,6 @@
 name: task-reviewer
 description: Routine Superpowers per-task spec-compliance and code-quality reviewer
 model: openrouter/google/gemini-3.7-flash
-fallbackModels:
-  - openrouter/z-ai/glm-5.3:low
 thinking: medium
 tools: read, grep, find, ls
 systemPromptMode: replace

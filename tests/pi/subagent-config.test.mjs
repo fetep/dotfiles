@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { readFileSync, readlinkSync } from 'node:fs';
+import { homedir } from 'node:os';
 import { dirname, resolve } from 'node:path';
 import test from 'node:test';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const testDir = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(testDir, '../..');
@@ -15,14 +16,6 @@ const expected = {
   'task-reviewer': ['openrouter/google/gemini-3.7-flash', 'medium'],
   'deep-reviewer': ['openrouter/x-ai/grok-4.6', 'high'],
   explore: ['openrouter/z-ai/glm-5.3-flash', 'low'],
-};
-const expectedFallbacks = {
-  'implementer-fast': ['openrouter/openai/gpt-5.6-sol'],
-  implementer: ['openrouter/openai/gpt-5.6-sol'],
-  'implementer-deep': ['openrouter/openai/gpt-5.6-sol'],
-  'task-reviewer': ['openrouter/z-ai/glm-5.3:low'],
-  'deep-reviewer': ['openrouter/moonshotai/kimi-k3:high'],
-  explore: ['openrouter/google/gemini-3.7-flash:low'],
 };
 const expectedTools = {
   'implementer-fast': 'read, grep, find, ls, bash, edit, write, contact_supervisor',
@@ -68,7 +61,7 @@ test('agent profiles use the approved models, thinking levels, and context polic
     const { frontmatter } = agents[name];
     assert.equal(frontmatter.name, name);
     assert.equal(frontmatter.model, model);
-    assert.deepEqual(frontmatter.fallbackModels, expectedFallbacks[name]);
+    assert.equal(Object.hasOwn(frontmatter, 'fallbackModels'), false, name);
     assert.equal(frontmatter.thinking, thinking);
     assert.equal(frontmatter.tools, expectedTools[name]);
     assert.equal(frontmatter.systemPromptMode, 'replace');
@@ -86,9 +79,7 @@ test('implementers are Sol-only writers with editing tools', () => {
     const tools = frontmatter.tools.split(/,\s*/);
     assert.ok(tools.includes('edit'), `${name} can edit`);
     assert.ok(tools.includes('write'), `${name} can write`);
-    for (const model of [frontmatter.model, ...frontmatter.fallbackModels]) {
-      assert.match(model.replace(/:(?:low|medium|high)$/, ''), /^(?:openai-codex|openrouter\/openai)\/gpt-5\.6-sol$/);
-    }
+    assert.match(frontmatter.model, /^openai-codex\/gpt-5\.6-sol$/);
   }
 });
 
@@ -151,7 +142,33 @@ test('Superpowers plans and specs are never committed', () => {
   }
 });
 
-test('all configured primary and fallback models exist in the Pi registry', () => {
+test('installed pi-subagents discovers every routed profile without configuration errors', () => {
+  const loaderPath = resolve(
+    process.env.PI_CODING_AGENT_DIR ?? resolve(homedir(), '.pi/agent'),
+    'npm/node_modules/pi-subagents/src/agents/agents.js',
+  );
+  const script = `
+    import { discoverAgents } from ${JSON.stringify(pathToFileURL(loaderPath).href)};
+    console.log(JSON.stringify(discoverAgents(${JSON.stringify(repoRoot)}, 'user')));
+  `;
+  const discovered = JSON.parse(execFileSync(
+    process.execPath,
+    ['--input-type=module', '--eval', script],
+    {
+      encoding: 'utf8',
+      env: { ...process.env, PI_CODING_AGENT_DIR: resolve(repoRoot, 'home/.pi/agent') },
+    },
+  ));
+  const profilePaths = new Set(Object.keys(expected).map((name) => resolve(agentDir, `${name}.md`)));
+  assert.deepEqual(discovered.agentDiagnostics.filter((item) => profilePaths.has(item.filePath)), []);
+  for (const name of Object.keys(expected)) {
+    assert.ok(discovered.agents.some((agent) => (
+      agent.name === name && agent.filePath === resolve(agentDir, `${name}.md`)
+    )), name);
+  }
+});
+
+test('all configured primary models exist in the Pi registry', () => {
   const modelRows = execFileSync('pi', ['--list-models'], { encoding: 'utf8' })
     .trim()
     .split('\n')
@@ -162,12 +179,9 @@ test('all configured primary and fallback models exist in the Pi registry', () =
   }));
   const configuredModels = [
     'openai-codex/gpt-5.6-sol',
-    'openrouter/openai/gpt-5.6-sol',
     'openrouter/google/gemini-3.7-flash',
-    'openrouter/z-ai/glm-5.3',
     'openrouter/z-ai/glm-5.3-flash',
     'openrouter/x-ai/grok-4.6',
-    'openrouter/moonshotai/kimi-k3',
   ];
   for (const model of configuredModels) assert.ok(availableModels.has(model), model);
 });

@@ -2,8 +2,6 @@
 name: explore
 description: Fast Superpowers codebase reconnaissance and compressed handoff generation
 model: openrouter/z-ai/glm-5.3-flash
-fallbackModels:
-  - openrouter/google/gemini-3.7-flash:low
 thinking: low
 tools: read, grep, find, ls, bash
 systemPromptMode: replace

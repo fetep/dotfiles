@@ -43,6 +43,10 @@ make -C brew Brewfile     # Regenerate Brewfile from installed packages
 node --test tests/pi/*.test.*
 ```
 
+Pi tests require the `pi` CLI and `pi-subagents` installed under the effective agent directory
+(`PI_CODING_AGENT_DIR`, default `~/.pi/agent`). Profile tests use the installed package's discovery
+loader to catch schema incompatibilities; pi-subagents 0.78.0 rejects `fallbackModels` frontmatter.
+
 Other configuration changes have no automated suite; verify them interactively.
 
 ### Pi Packages and MCP

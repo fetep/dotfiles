@@ -2,8 +2,6 @@
 name: implementer-deep
 description: Fresh high-reasoning Superpowers implementation escalation after repeated reasoning failures
 model: openai-codex/gpt-5.6-sol
-fallbackModels:
-  - openrouter/openai/gpt-5.6-sol
 thinking: high
 tools: read, grep, find, ls, bash, edit, write, contact_supervisor
 systemPromptMode: replace
