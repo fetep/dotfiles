@@ -4,6 +4,7 @@
   "defaultModel": "gpt-6.1-sol",
   "defaultThinkingLevel": "high",
   "theme": "solarized-dark",
+  "tuiMode": "regular",
   "hideThinkingBlock": false,
   "packages": [
     {
