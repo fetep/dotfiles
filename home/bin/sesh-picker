@@ -17,7 +17,11 @@ if [[ -n ${TMUX:-} ]]; then
     exit $?
 fi
 
-# outside of tmux, we want to let people select a new sesh after the current one ends.
+# Outside tmux, use the native window chooser after a session ends.
+# Fall back to sesh when there are no tmux sessions left.
 while :; do
     picker "$@"
+    while tmux has-session 2>/dev/null; do
+        tmux attach-session \; choose-window || break
+    done
 done

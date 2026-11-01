@@ -17,6 +17,7 @@ dotfiles/
 ├── brew/             # Homebrew package management
 │   ├── Brewfile      # Package list
 │   └── Makefile      # brew bundle automation
+├── tests/bin/        # Node tests for personal scripts
 ├── tests/pi/         # Node tests for Pi extensions
 └── backup/           # Backup of replaced files (auto-created)
 ```
@@ -40,6 +41,7 @@ make -C brew Brewfile     # Regenerate Brewfile from installed packages
 
 ### Tests
 ```bash
+node --test tests/bin/*.test.mjs
 node --test tests/pi/*.test.*
 ```
 
@@ -47,6 +49,7 @@ Pi tests require the `pi` CLI and `pi-subagents` installed under the effective a
 (`PI_CODING_AGENT_DIR`, default `~/.pi/agent`). Profile tests use the installed package's discovery
 loader to catch schema incompatibilities; pi-subagents 0.78.0 rejects `fallbackModels` frontmatter.
 
+Script tests use mocked commands and need only Node and Bash.
 Other configuration changes have no automated suite; verify them interactively.
 
 ### Pi Packages and MCP
