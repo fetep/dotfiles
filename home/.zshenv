@@ -7,7 +7,7 @@ HOST="${$(hostname)%%.*}"
 typeset -Ug path
 
 # prepend path
-for dir in ~/.local/bin ~/bin; do
+for dir in ~/.local/bin ~/bin ~/.bun/bin; do
   [[ -d "$dir" ]] && path=("$dir" "$path[@]")
 done
 
