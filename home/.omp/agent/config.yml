@@ -1,0 +1,23 @@
+modelRoles:
+  default: openai-codex/gpt-6.1-sol
+symbolPreset: unicode
+composer:
+  shape: pi
+theme:
+  dark: dark-solarized
+setupVersion: 2
+statusLine:
+  compactThinkingLevel: false
+spelling:
+  autocomplete: "off"
+tui:
+  vimMode: true
+  reactions: false
+doubleEscapeAction: none
+startup:
+  quiet: true
+emojiAutocomplete: false
+display:
+  smoothStreaming: false
+lsp:
+  diagnosticsOnEdit: true
