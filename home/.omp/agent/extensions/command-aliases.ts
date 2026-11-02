@@ -5,5 +5,8 @@ export default function commandAliases(pi: ExtensionAPI) {
     if (/^\/name(?=$|[\s:])/.test(event.text)) {
       return { text: event.text.replace(/^\/name/, '/rename') };
     }
+    if (/^\/thinking(?=$|[\s:])/.test(event.text)) {
+      return { text: event.text.replace(/^\/thinking/, '/effort') };
+    }
   });
 }

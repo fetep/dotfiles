@@ -1,0 +1,122 @@
+---
+tags: [ ai, coding, agents, pi ]
+---
+# Pi CLI - terminal coding agent
+
+# Start interactively:
+pi
+pi "Review this repository"
+pi @README.md @src/app.ts "Explain these files"
+
+# Print one response and exit:
+pi -p "Summarize this codebase"
+cat error.log | pi -p "Diagnose this error"
+pi --no-session -p "Answer without saving a session"
+
+# Choose a provider, model, and thinking level:
+pi --list-models
+pi --list-models sonnet
+pi --provider anthropic --model claude-sonnet-4-5
+pi --model openai-codex/gpt-5.4:high
+pi --thinking high
+pi --models "*sonnet*,openai-codex/*"
+
+# Session management:
+pi -c                              # continue the latest session
+pi -r                              # browse saved sessions
+pi --session <path-or-id>          # resume a specific session
+pi --fork <path-or-id>             # fork a session into a new file
+pi --name "refactor auth"          # name a new session
+pi --export <session.jsonl> [out]  # export a session to HTML
+
+# Restrict tools:
+pi --tools read,grep,find,ls -p "Review without changing files"
+pi --exclude-tools bash
+pi --no-tools
+pi --no-builtin-tools
+
+# Load only selected resources:
+pi --no-extensions -e ./extension.ts
+pi --no-skills --skill ./skills/my-skill
+pi --no-prompt-templates --prompt-template ./prompts/review.md
+pi --no-themes --theme ./themes/custom.json
+pi --no-context-files
+
+# Project trust and offline mode:
+pi --approve                          # trust project resources for this run
+pi --no-approve                       # ignore project resources for this run
+pi --offline                          # disable startup network operations
+
+# Other modes:
+pi --mode json -p "List files"       # stream JSONL events
+pi --mode rpc                         # JSONL RPC over stdin/stdout
+pi --tui-mode fullscreen              # fullscreen transcript scrolling
+
+# Authentication:
+pi                                    # then run /login
+pi auth print-api-key --provider <provider>
+pi auth print-bearer-token --provider <provider>
+
+# Package management:
+pi install npm:<package>
+pi install git:github.com/<user>/<repo>
+pi install -l npm:<package>           # install for the current project
+pi remove <source>
+pi list
+pi config                             # enable or disable package resources
+pi update                             # update pi
+pi update --extensions               # update packages only
+pi update --models                   # refresh model catalogs
+pi update --all                      # update pi and packages
+
+# Interactive commands:
+/login, /logout                       # credentials
+/model, /thinking, /scoped-models     # model controls
+/settings, /trust                     # configuration and project trust
+/resume, /new, /name <name>           # sessions
+/session, /tree, /fork, /clone        # inspect or branch sessions
+/compact [instructions]               # summarize old context
+/copy                                 # copy the last assistant response
+/export [file], /import <file>         # move sessions
+/share                                # upload a private GitHub gist
+/reload                               # reload config and resources
+/hotkeys, /changelog, /quit
+/skill:<name>                          # invoke an installed skill
+/<template-name>                       # expand a prompt template
+
+# Interactive input:
+@path                                 # fuzzy-search and attach a file
+!command                              # run shell command and send output to model
+!!command                             # run shell command without sending output
+Enter                                 # submit or queue a steering message
+Alt+Enter                             # queue a follow-up message
+Alt+Up                                # restore queued messages to editor
+Shift+Enter / Ctrl+J                  # insert newline
+Ctrl+G                                # edit prompt in external editor
+Ctrl+V                                # paste image or text
+
+# Common shortcuts:
+Escape                                # cancel or abort
+Escape twice                          # open session tree
+Ctrl+C                                # clear editor; press twice to quit
+Ctrl+D                                # quit when editor is empty
+Ctrl+L                                # select model
+Ctrl+P / Ctrl+Shift+P                 # cycle models forward / backward
+Shift+Tab                             # cycle thinking level
+Ctrl+O                                # collapse or expand tool output
+Ctrl+T                                # collapse or expand thinking
+Ctrl+X                                # copy last assistant message
+
+# Resource locations:
+# Global:  ~/.pi/agent/{settings.json,AGENTS.md,keybindings.json}
+# Project: .pi/settings.json and AGENTS.md
+# Resources: {~/.pi/agent,.pi}/{extensions,skills,prompts,themes}/
+# Sessions: ~/.pi/agent/sessions/
+
+# Useful environment variables:
+# PI_CODING_AGENT_DIR          override ~/.pi/agent
+# PI_CODING_AGENT_SESSION_DIR  override session storage
+# PI_OFFLINE=1                 disable startup network operations
+# PI_SKIP_VERSION_CHECK=1      skip only the version check
+# PI_CACHE_RETENTION=long      use extended provider prompt caching
+# PI_SESSION_ID, PI_SESSION_FILE, PI_PROVIDER, PI_MODEL, PI_REASONING_LEVEL
