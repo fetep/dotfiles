@@ -3,6 +3,7 @@ modelRoles:
 symbolPreset: unicode
 composer:
   shape: pi
+  predictions: false
 theme:
   dark: dark-solarized
 setupVersion: 2

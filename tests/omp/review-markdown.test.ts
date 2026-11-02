@@ -6,12 +6,12 @@ import { basename, join } from 'node:path';
 import test from 'node:test';
 
 async function loadReview() {
-  return import('../../home/.pi/agent/extensions/review-markdown.ts');
+  return import('../../home/.omp/agent/extensions/review-markdown.ts');
 }
 
 test('finds the latest presented Markdown path on the active branch', async () => {
   const { findPresentedMarkdownPaths } = await loadReview();
-  const cwd = mkdtempSync(join(tmpdir(), 'pi-md-'));
+  const cwd = mkdtempSync(join(tmpdir(), 'omp-md-'));
   try {
     writeFileSync(join(cwd, 'spec.md'), 'spec');
     writeFileSync(join(cwd, 'plan.md'), 'plan');
@@ -29,7 +29,7 @@ test('finds the latest presented Markdown path on the active branch', async () =
 
 test('returns all existing paths from the newest presentation, including Markdown links', async () => {
   const { findPresentedMarkdownPaths } = await loadReview();
-  const cwd = mkdtempSync(join(tmpdir(), 'pi-md-'));
+  const cwd = mkdtempSync(join(tmpdir(), 'omp-md-'));
   try {
     writeFileSync(join(cwd, 'older.md'), 'older');
     writeFileSync(join(cwd, 'plan with spaces.md'), 'plan');
@@ -51,7 +51,7 @@ test('returns all existing paths from the newest presentation, including Markdow
 
 test('uses the most recent existing document when a newer presented path is missing', async () => {
   const { findPresentedMarkdownPaths } = await loadReview();
-  const cwd = mkdtempSync(join(tmpdir(), 'pi-md-'));
+  const cwd = mkdtempSync(join(tmpdir(), 'omp-md-'));
   try {
     writeFileSync(join(cwd, 'old.md'), 'old');
     const entries = [
@@ -67,7 +67,7 @@ test('uses the most recent existing document when a newer presented path is miss
 
 test('finds a bare Markdown path presented without a link or backticks', async () => {
   const { findPresentedMarkdownPaths } = await loadReview();
-  const cwd = mkdtempSync(join(tmpdir(), 'pi-md-'));
+  const cwd = mkdtempSync(join(tmpdir(), 'omp-md-'));
   try {
     writeFileSync(join(cwd, 'plan.md'), 'plan');
     const entries = [
@@ -82,20 +82,19 @@ test('finds a bare Markdown path presented without a link or backticks', async (
 
 test('/md opens the latest presented document in a new tmux window with the same cwd', async () => {
   const { default: reviewMarkdownExtension } = await loadReview();
-  const cwd = mkdtempSync(join(tmpdir(), "pi-md's folder "));
+  const cwd = mkdtempSync(join(tmpdir(), "omp-md's folder "));
   const originalTmux = process.env.TMUX;
-  const originalViewer = process.env.PI_MD_VIEWER;
+  const originalViewer = process.env.OMP_MD_VIEWER;
   process.env.TMUX = '/tmp/tmux-1000/default,1,0';
-  delete process.env.PI_MD_VIEWER;
+  delete process.env.OMP_MD_VIEWER;
   try {
     const file = join(cwd, "Pete's plan.md");
     writeFileSync(file, 'plan');
     const calls: unknown[] = [];
     let command: any;
-    let shortcut: any;
-    const pi = {
+    const omp = {
       registerCommand: (name: string, options: any) => { if (name === 'md') command = options.handler; },
-      registerShortcut: (key: string, options: any) => { if (key === 'alt+m') shortcut = options.handler; },
+      registerShortcut: () => { throw Error('shortcuts are reserved'); },
       exec: async (name: string, args: string[]) => { calls.push([name, args]); return { code: 0, stderr: '' }; },
     };
     const ctx = {
@@ -106,40 +105,37 @@ test('/md opens the latest presented document in a new tmux window with the same
       ui: { notify: () => {}, select: () => { throw Error('unexpected picker'); } },
     };
 
-    reviewMarkdownExtension?.(pi);
+    reviewMarkdownExtension?.(omp);
     await command?.('', ctx);
-    await shortcut?.(ctx);
-    process.env.PI_MD_VIEWER = '  ';
+    process.env.OMP_MD_VIEWER = '  ';
     await command?.('', ctx);
 
     assert.deepEqual(calls, [
-      ['tmux', ['new-window', '-c', cwd, 'mdless', '--', file]],
       ['tmux', ['new-window', '-c', cwd, 'mdless', '--', file]],
       ['tmux', ['new-window', '-c', cwd, 'mdless', '--', file]],
     ]);
   } finally {
     if (originalTmux === undefined) delete process.env.TMUX;
     else process.env.TMUX = originalTmux;
-    if (originalViewer === undefined) delete process.env.PI_MD_VIEWER;
-    else process.env.PI_MD_VIEWER = originalViewer;
+    if (originalViewer === undefined) delete process.env.OMP_MD_VIEWER;
+    else process.env.OMP_MD_VIEWER = originalViewer;
     rmSync(cwd, { recursive: true, force: true });
   }
 });
 
-test('/md uses PI_MD_VIEWER with executable and flags as separate arguments', async () => {
+test('/md uses OMP_MD_VIEWER with executable and flags as separate arguments', async () => {
   const { default: reviewMarkdownExtension } = await loadReview();
-  const cwd = mkdtempSync(join(tmpdir(), 'pi-md-'));
+  const cwd = mkdtempSync(join(tmpdir(), 'omp-md-'));
   const originalTmux = process.env.TMUX;
-  const originalViewer = process.env.PI_MD_VIEWER;
+  const originalViewer = process.env.OMP_MD_VIEWER;
   process.env.TMUX = '/tmp/tmux-1000/default,1,0';
-  process.env.PI_MD_VIEWER = 'less -n';
+  process.env.OMP_MD_VIEWER = 'less -n';
   try {
     writeFileSync(join(cwd, 'plan.md'), 'plan');
     let command: any;
     const calls: unknown[] = [];
-    const pi = {
+    const omp = {
       registerCommand: (_name: string, registration: any) => { command = registration.handler; },
-      registerShortcut: () => {},
       exec: async (name: string, args: string[]) => { calls.push([name, args]); return { code: 0, stderr: '' }; },
     };
     const ctx = {
@@ -150,13 +146,13 @@ test('/md uses PI_MD_VIEWER with executable and flags as separate arguments', as
       ui: { notify: () => {} },
     };
 
-    reviewMarkdownExtension?.(pi);
+    reviewMarkdownExtension?.(omp);
     await command?.('', ctx);
-    process.env.PI_MD_VIEWER = "less -P 'My prompt: ' -n";
+    process.env.OMP_MD_VIEWER = "less -P 'My prompt: ' -n";
     await command?.('', ctx);
-    process.env.PI_MD_VIEWER = 'less -P \\  -n';
+    process.env.OMP_MD_VIEWER = 'less -P \\  -n';
     await command?.('', ctx);
-    process.env.PI_MD_VIEWER = 'less -P "C:\\docs" -n';
+    process.env.OMP_MD_VIEWER = 'less -P "C:\\docs" -n';
     await command?.('', ctx);
 
     assert.deepEqual(calls, [
@@ -168,25 +164,24 @@ test('/md uses PI_MD_VIEWER with executable and flags as separate arguments', as
   } finally {
     if (originalTmux === undefined) delete process.env.TMUX;
     else process.env.TMUX = originalTmux;
-    if (originalViewer === undefined) delete process.env.PI_MD_VIEWER;
-    else process.env.PI_MD_VIEWER = originalViewer;
+    if (originalViewer === undefined) delete process.env.OMP_MD_VIEWER;
+    else process.env.OMP_MD_VIEWER = originalViewer;
     rmSync(cwd, { recursive: true, force: true });
   }
 });
 
-test('/md reports a malformed PI_MD_VIEWER without opening a window', async () => {
+test('/md reports a malformed OMP_MD_VIEWER without opening a window', async () => {
   const { default: reviewMarkdownExtension } = await loadReview();
-  const cwd = mkdtempSync(join(tmpdir(), 'pi-md-'));
+  const cwd = mkdtempSync(join(tmpdir(), 'omp-md-'));
   const originalTmux = process.env.TMUX;
-  const originalViewer = process.env.PI_MD_VIEWER;
+  const originalViewer = process.env.OMP_MD_VIEWER;
   process.env.TMUX = '/tmp/tmux-1000/default,1,0';
   try {
     writeFileSync(join(cwd, 'plan.md'), 'plan');
     let command: any;
     const notifications: unknown[] = [];
-    const pi = {
+    const omp = {
       registerCommand: (_name: string, registration: any) => { command = registration.handler; },
-      registerShortcut: () => {},
       exec: async () => { throw Error('must not launch'); },
     };
     const ctx = {
@@ -197,34 +192,34 @@ test('/md reports a malformed PI_MD_VIEWER without opening a window', async () =
       ui: { notify: (text: string, level: string) => notifications.push([text, level]) },
     };
 
-    reviewMarkdownExtension?.(pi);
-    process.env.PI_MD_VIEWER = "less -P 'unclosed";
+    reviewMarkdownExtension?.(omp);
+    process.env.OMP_MD_VIEWER = "less -P 'unclosed";
     await command?.('', ctx);
-    process.env.PI_MD_VIEWER = "'' -n";
+    process.env.OMP_MD_VIEWER = "'' -n";
     await command?.('', ctx);
 
     assert.deepEqual(notifications, [
-      ['Invalid PI_MD_VIEWER: unmatched quote or escape.', 'error'],
-      ['PI_MD_VIEWER must begin with an executable.', 'error'],
+      ['Invalid OMP_MD_VIEWER: unmatched quote or escape.', 'error'],
+      ['OMP_MD_VIEWER must begin with an executable.', 'error'],
     ]);
   } finally {
     if (originalTmux === undefined) delete process.env.TMUX;
     else process.env.TMUX = originalTmux;
-    if (originalViewer === undefined) delete process.env.PI_MD_VIEWER;
-    else process.env.PI_MD_VIEWER = originalViewer;
+    if (originalViewer === undefined) delete process.env.OMP_MD_VIEWER;
+    else process.env.OMP_MD_VIEWER = originalViewer;
     rmSync(cwd, { recursive: true, force: true });
   }
 });
 
 test('/md does not allow a viewer flag to start another tmux command', async () => {
   const { default: reviewMarkdownExtension } = await loadReview();
-  const cwd = mkdtempSync(join(tmpdir(), 'pi-md-tmux-'));
+  const cwd = mkdtempSync(join(tmpdir(), 'omp-md-tmux-'));
   const socket = basename(cwd);
   const originalTmux = process.env.TMUX;
-  const originalViewer = process.env.PI_MD_VIEWER;
+  const originalViewer = process.env.OMP_MD_VIEWER;
   const tmux = (args: string[]) => spawnSync('tmux', ['-L', socket, ...args], { encoding: 'utf8' });
   process.env.TMUX = '/tmp/tmux-test/default,1,0';
-  process.env.PI_MD_VIEWER = '/usr/bin/true ";" new-window -n injected /bin/sleep 60';
+  process.env.OMP_MD_VIEWER = '/usr/bin/true ";" new-window -n injected /bin/sleep 60';
   try {
     writeFileSync(join(cwd, 'plan.md'), 'plan');
     assert.equal(tmux(['-f', '/dev/null', 'new-session', '-d', '-s', 'md-test']).status, 0);
@@ -232,7 +227,6 @@ test('/md does not allow a viewer flag to start another tmux command', async () 
     const notifications: unknown[] = [];
     reviewMarkdownExtension?.({
       registerCommand: (_name: string, registration: any) => { command = registration.handler; },
-      registerShortcut: () => {},
       exec: async (name: string, args: string[]) => {
         assert.equal(name, 'tmux');
         const result = tmux(args);
@@ -247,34 +241,33 @@ test('/md does not allow a viewer flag to start another tmux command', async () 
       ui: { notify: (text: string, level: string) => notifications.push([text, level]) },
     });
 
-    assert.deepEqual(notifications, [['Invalid PI_MD_VIEWER: tmux command separator is not allowed.', 'error']]);
+    assert.deepEqual(notifications, [['Invalid OMP_MD_VIEWER: tmux command separator is not allowed.', 'error']]);
     assert.doesNotMatch(tmux(['list-windows', '-t', 'md-test', '-F', '#{window_name}']).stdout, /injected/);
   } finally {
     tmux(['kill-server']);
     if (originalTmux === undefined) delete process.env.TMUX;
     else process.env.TMUX = originalTmux;
-    if (originalViewer === undefined) delete process.env.PI_MD_VIEWER;
-    else process.env.PI_MD_VIEWER = originalViewer;
+    if (originalViewer === undefined) delete process.env.OMP_MD_VIEWER;
+    else process.env.OMP_MD_VIEWER = originalViewer;
     rmSync(cwd, { recursive: true, force: true });
   }
 });
 
 test('/md lets the user select when the latest message presents multiple documents', async () => {
   const { default: reviewMarkdownExtension } = await loadReview();
-  const cwd = mkdtempSync(join(tmpdir(), 'pi-md-'));
+  const cwd = mkdtempSync(join(tmpdir(), 'omp-md-'));
   const originalTmux = process.env.TMUX;
-  const originalViewer = process.env.PI_MD_VIEWER;
+  const originalViewer = process.env.OMP_MD_VIEWER;
   process.env.TMUX = '/tmp/tmux-1000/default,1,0';
-  delete process.env.PI_MD_VIEWER;
+  delete process.env.OMP_MD_VIEWER;
   try {
     writeFileSync(join(cwd, 'spec.md'), 'spec');
     writeFileSync(join(cwd, 'plan.md'), 'plan');
     let command: any;
     let options: string[] = [];
     const calls: unknown[] = [];
-    const pi = {
+    const omp = {
       registerCommand: (_name: string, registration: any) => { command = registration.handler; },
-      registerShortcut: () => {},
       exec: async (name: string, args: string[]) => { calls.push([name, args]); return { code: 0, stderr: '' }; },
     };
     const ctx = {
@@ -288,7 +281,7 @@ test('/md lets the user select when the latest message presents multiple documen
       } },
     };
 
-    reviewMarkdownExtension?.(pi);
+    reviewMarkdownExtension?.(omp);
     await command?.('', ctx);
 
     assert.deepEqual(options, ['spec.md', 'plan.md']);
@@ -296,33 +289,9 @@ test('/md lets the user select when the latest message presents multiple documen
   } finally {
     if (originalTmux === undefined) delete process.env.TMUX;
     else process.env.TMUX = originalTmux;
-    if (originalViewer === undefined) delete process.env.PI_MD_VIEWER;
-    else process.env.PI_MD_VIEWER = originalViewer;
+    if (originalViewer === undefined) delete process.env.OMP_MD_VIEWER;
+    else process.env.OMP_MD_VIEWER = originalViewer;
     rmSync(cwd, { recursive: true, force: true });
-  }
-});
-
-test('/md refuses to open a window outside tmux', async () => {
-  const { default: reviewMarkdownExtension } = await loadReview();
-  const originalTmux = process.env.TMUX;
-  delete process.env.TMUX;
-  try {
-    let command: any;
-    const notifications: unknown[] = [];
-    reviewMarkdownExtension?.({
-      registerCommand: (_name: string, registration: any) => { command = registration.handler; },
-      registerShortcut: () => {},
-      exec: async () => { throw Error('must not launch'); },
-    });
-    await command?.('', {
-      cwd: '/tmp',
-      sessionManager: { getBranch: () => [] },
-      ui: { notify: (text: string, level: string) => notifications.push([text, level]) },
-    });
-    assert.deepEqual(notifications, [['Open Pi inside tmux to use /md.', 'warning']]);
-  } finally {
-    if (originalTmux === undefined) delete process.env.TMUX;
-    else process.env.TMUX = originalTmux;
   }
 });
 
@@ -336,7 +305,6 @@ test('/md warns instead of launching tmux without a presented document', async (
     const notifications: unknown[] = [];
     reviewMarkdownExtension?.({
       registerCommand: (_name: string, registration: any) => { command = registration.handler; },
-      registerShortcut: () => {},
       exec: async () => { launches++; return { code: 0 }; },
     });
     await command?.('', {
@@ -355,16 +323,15 @@ test('/md warns instead of launching tmux without a presented document', async (
 
 test('/md reports a tmux launch error without throwing', async () => {
   const { default: reviewMarkdownExtension } = await loadReview();
-  const cwd = mkdtempSync(join(tmpdir(), 'pi-md-'));
+  const cwd = mkdtempSync(join(tmpdir(), 'omp-md-'));
   const originalTmux = process.env.TMUX;
   process.env.TMUX = '/tmp/tmux-1000/default,1,0';
   try {
     writeFileSync(join(cwd, 'plan.md'), 'plan');
     let command: any;
     const notifications: unknown[] = [];
-    const pi = {
+    const omp = {
       registerCommand: (_name: string, registration: any) => { command = registration.handler; },
-      registerShortcut: () => {},
       exec: async () => { throw Error('tmux socket unavailable'); },
     };
     const ctx = {
@@ -375,7 +342,7 @@ test('/md reports a tmux launch error without throwing', async () => {
       ui: { notify: (text: string, level: string) => notifications.push([text, level]) },
     };
 
-    reviewMarkdownExtension?.(pi);
+    reviewMarkdownExtension?.(omp);
     await command?.('', ctx);
 
     assert.deepEqual(notifications, [['tmux socket unavailable', 'error']]);

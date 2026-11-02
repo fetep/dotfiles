@@ -1,6 +1,6 @@
 import { statSync } from 'node:fs';
 import { relative, resolve } from 'node:path';
-import type { ExtensionAPI, ExtensionContext } from '@earendil-works/pi-coding-agent';
+import type { ExtensionAPI, ExtensionContext } from '@oh-my-pi/pi-coding-agent';
 
 export function findPresentedMarkdownPaths(entries: unknown[], cwd: string): string[] {
   for (const entry of [...entries].reverse()) {
@@ -55,19 +55,19 @@ function viewerArgs(value: string | undefined): string[] {
       started = true;
     }
   }
-  if (escaped || quote) throw new Error('Invalid PI_MD_VIEWER: unmatched quote or escape.');
+  if (escaped || quote) throw new Error('Invalid OMP_MD_VIEWER: unmatched quote or escape.');
   if (started) args.push(word);
-  if (!args[0]) throw new Error('PI_MD_VIEWER must begin with an executable.');
+  if (!args[0]) throw new Error('OMP_MD_VIEWER must begin with an executable.');
   if (args.some((arg) => arg.includes(';'))) {
-    throw new Error('Invalid PI_MD_VIEWER: tmux command separator is not allowed.');
+    throw new Error('Invalid OMP_MD_VIEWER: tmux command separator is not allowed.');
   }
   return args;
 }
 
-export default function reviewMarkdownExtension(pi: ExtensionAPI) {
+export default function reviewMarkdownExtension(omp: ExtensionAPI) {
   const openReview = async (ctx: ExtensionContext) => {
     if (!process.env.TMUX) {
-      ctx.ui.notify('Open Pi inside tmux to use /md.', 'warning');
+      ctx.ui.notify('Open omp inside tmux to use /md.', 'warning');
       return;
     }
     const paths = findPresentedMarkdownPaths(ctx.sessionManager.getBranch(), ctx.cwd);
@@ -81,8 +81,8 @@ export default function reviewMarkdownExtension(pi: ExtensionAPI) {
     const path = paths.find((candidate) => relative(ctx.cwd, candidate) === selected);
     if (!path) return;
     try {
-      const result = await pi.exec('tmux', [
-        'new-window', '-c', ctx.cwd, ...viewerArgs(process.env.PI_MD_VIEWER), '--', path,
+      const result = await omp.exec('tmux', [
+        'new-window', '-c', ctx.cwd, ...viewerArgs(process.env.OMP_MD_VIEWER), '--', path,
       ]);
       if (result.code !== 0) ctx.ui.notify(result.stderr || 'Could not open tmux window.', 'error');
     } catch (error) {
@@ -90,12 +90,8 @@ export default function reviewMarkdownExtension(pi: ExtensionAPI) {
     }
   };
 
-  pi.registerCommand('md', {
+  omp.registerCommand('md', {
     description: 'Review the latest presented Markdown document in a viewer',
     handler: async (_args, ctx) => openReview(ctx),
-  });
-  pi.registerShortcut('alt+m', {
-    description: 'Review the latest presented Markdown document in a viewer',
-    handler: openReview,
   });
 }

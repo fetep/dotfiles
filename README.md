@@ -20,6 +20,24 @@ and `/thinking` to `/effort`, preserving arguments. `thinking-cycle.ts` makes Sh
 between medium and high effort; other levels enter the cycle at medium on the next press.
 Restart omp or run `/reload-plugins` after installing extension changes.
 
+Next-message predictions are disabled. Work-specific model and permission configuration belongs
+in the private overlay.
+
+### Markdown review
+
+Inside tmux, `/md` opens the newest existing Markdown document presented by the assistant in a
+new `mdless` window with the same working directory. Multiple documents produce a picker.
+Set `OMP_MD_VIEWER` to override the executable and flags, for example `OMP_MD_VIEWER='less -n'`.
+No shortcut is registered: Alt+M remains omp's model selector.
+
+Run the Markdown behavior regressions with:
+
+```bash
+node --test tests/omp/*.test.*
+```
+
+The tmux command-injection regression requires `tmux` on `PATH`.
+
 ## Private overlay
 
 Set `DOTFILES_OVERLAY` to the path of a private repository using the same layout:
