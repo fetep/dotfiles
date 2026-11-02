@@ -21,3 +21,6 @@ display:
   smoothStreaming: false
 lsp:
   diagnosticsOnEdit: true
+title:
+  refreshOnReplan: false
+  refreshAfterPrompts: 0
